@@ -6,16 +6,17 @@ public class Obstacle : MonoBehaviour
 {
     public float speed = 5f;
     private Camera mainCamera;
+    private Vector3 direction;
+    private bool hasEnteredScreen = false;
 
     void Start()
     {
         mainCamera = Camera.main;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
+        transform.Translate(direction * speed * Time.deltaTime);
 
         if (IsOffScreen())
         {
@@ -23,9 +24,14 @@ public class Obstacle : MonoBehaviour
         }
     }
 
+    public void SetDirection(Vector3 direction)
+    {
+        this.direction = direction;
+    }
+
     private bool IsOffScreen()
     {
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(transform.position);
-        return screenPosition.y < 0;
+        return (screenPosition.y < 0 || screenPosition.y > Screen.height || screenPosition.x < 0 || screenPosition.x > Screen.width) && hasEnteredScreen;
     }
 }
