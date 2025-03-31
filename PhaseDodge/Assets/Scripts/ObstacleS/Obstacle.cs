@@ -8,12 +8,12 @@ public class Obstacle : MonoBehaviour
     protected Camera mainCamera;
     protected Vector3 direction;
     protected bool hasEnteredScreen = false;
-    protected PolygonCollider2D collider2D;
+    protected PolygonCollider2D obstacleCollider2D;
 
     protected virtual void Start()
     {
         mainCamera = Camera.main;
-        collider2D = GetComponent<PolygonCollider2D>();
+        obstacleCollider2D = GetComponent<PolygonCollider2D>();
     }
 
     protected virtual void Update()
@@ -33,7 +33,7 @@ public class Obstacle : MonoBehaviour
 
     protected bool IsFullyOffScreen()
     {
-        Bounds bounds = collider2D.bounds;
+        Bounds bounds = obstacleCollider2D.bounds;
         Vector3 minScreenBounds = mainCamera.WorldToScreenPoint(bounds.min);
         Vector3 maxScreenBounds = mainCamera.WorldToScreenPoint(bounds.max);
 
