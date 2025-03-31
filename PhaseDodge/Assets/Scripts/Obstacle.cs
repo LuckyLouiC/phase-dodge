@@ -4,20 +4,19 @@ using UnityEngine.UIElements;
 
 public class Obstacle : MonoBehaviour
 {
-    [SerializeField]
-    private float speed = 20.0f;
-    private Camera mainCamera;
-    private Vector3 direction;
-    private bool hasEnteredScreen = false;
-    private PolygonCollider2D collider2D;
+    protected float speed = 0.5f;
+    protected Camera mainCamera;
+    protected Vector3 direction;
+    protected bool hasEnteredScreen = false;
+    protected PolygonCollider2D collider2D;
 
-    void Start()
+    protected virtual void Start()
     {
         mainCamera = Camera.main;
         collider2D = GetComponent<PolygonCollider2D>();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         transform.Translate(direction * speed * Time.deltaTime);
 
@@ -32,7 +31,7 @@ public class Obstacle : MonoBehaviour
         this.direction = direction;
     }
 
-    private bool IsFullyOffScreen()
+    protected bool IsFullyOffScreen()
     {
         Bounds bounds = collider2D.bounds;
         Vector3 minScreenBounds = mainCamera.WorldToScreenPoint(bounds.min);
@@ -41,7 +40,7 @@ public class Obstacle : MonoBehaviour
         return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height || maxScreenBounds.x < 0 || minScreenBounds.x > Screen.width;
     }
 
-    void OnBecameVisible()
+    protected void OnBecameVisible()
     {
         hasEnteredScreen = true;
     }

@@ -63,7 +63,10 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Obstacle.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Asteroid.cs" />
     <Compile Include="Assets\Scripts\ObstacleSpawner.cs" />
+    <Compile Include="Assets\Scripts\Satellite.cs" />
+    <Compile Include="Assets\Scripts\AlienShip.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
