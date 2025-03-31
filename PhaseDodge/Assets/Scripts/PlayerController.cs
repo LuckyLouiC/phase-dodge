@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,10 +19,20 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
             targetPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
+            RotateTowards(targetPosition);
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 5f);
         ClampPositionWithinCameraBounds();
+
+        Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
+    }
+
+    private void RotateTowards(Vector3 target)
+    {
+        Vector3 direction = target - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
     }
 
     void ClampPositionWithinCameraBounds()
