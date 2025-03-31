@@ -44,3 +44,8 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - Background
+  - Player
+  - Obstacle
+  - Foreground
+  - UI
