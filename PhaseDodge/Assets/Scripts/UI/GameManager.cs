@@ -19,8 +19,16 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         elapsedTime += Time.deltaTime;
-        int score = Mathf.FloorToInt(elapsedTime);
-        gameplayUIManager.UpdateScore(score);
+        string formattedTime = FormatElapsedTime(elapsedTime);
+        gameplayUIManager.UpdateScore(formattedTime);
+    }
+
+    private string FormatElapsedTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60F);
+        int seconds = Mathf.FloorToInt(time % 60F);
+        int milliseconds = Mathf.FloorToInt((time * 1000F) % 1000F);
+        return string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
     }
 
     public void GameOver()

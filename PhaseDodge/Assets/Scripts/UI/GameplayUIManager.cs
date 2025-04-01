@@ -22,7 +22,7 @@ public class GameplayUIManager : MonoBehaviour
         resumeButton.onClick.AddListener(ResumeGame);
         foreach (Button quitButton in quitButtons)
         {
-                quitButton.onClick.AddListener(ReturnToMainMenu);
+            quitButton.onClick.AddListener(ReturnToMainMenu);
         }
         pauseMenu.SetActive(false);
     }
@@ -51,13 +51,19 @@ public class GameplayUIManager : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
+    public void UpdateScore(string formattedTime)
+    {
+        scoreText.text = "Score: " + formattedTime;
+    }
+
     public void ShowGameOverMenu()
     {
         gameOverMenu.SetActive(true);
     }
 
-    public void UpdateScore(int score)
+    // Update is called once per frame
+    void Update()
     {
-        scoreText.text = "Score: " + score;
+
     }
 }
