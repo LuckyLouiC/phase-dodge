@@ -6,11 +6,13 @@ public class PlayerController : MonoBehaviour
 {
     private Camera mainCamera;
     private Vector3 targetPosition;
+    private GameManager gameManager;
 
     void Start()
     {
         mainCamera = Camera.main;
         targetPosition = transform.position;
+        gameManager = FindAnyObjectByType<GameManager>();
     }
 
     void Update()
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             Debug.Log("Game Over!");
+            gameManager.GameOver();
             Destroy(this.gameObject);
         }
     }

@@ -30,6 +30,7 @@ public class GameplayUIManager : MonoBehaviour
     private void RetryGame()
     {
         SceneManager.LoadScene("PrototypeScene");
+        Time.timeScale = 1;
     }
 
     private void PauseGame()
@@ -50,9 +51,13 @@ public class GameplayUIManager : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowGameOverMenu()
     {
-        
+        gameOverMenu.SetActive(true);
+    }
+
+    public void UpdateScore(int score)
+    {
+        scoreText.text = "Score: " + score;
     }
 }
