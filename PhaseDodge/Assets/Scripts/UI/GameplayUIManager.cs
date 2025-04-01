@@ -8,20 +8,28 @@ public class GameplayUIManager : MonoBehaviour
 {
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
+    [SerializeField] private Button retryButton;
     [SerializeField] private Button[] quitButtons;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject gameOverMenu;
 
     [SerializeField] private TextMeshProUGUI scoreText;
 
     void Start()
     {
         pauseButton.onClick.AddListener(PauseGame);
+        retryButton.onClick.AddListener(RetryGame);
         resumeButton.onClick.AddListener(ResumeGame);
         foreach (Button quitButton in quitButtons)
         {
                 quitButton.onClick.AddListener(ReturnToMainMenu);
         }
         pauseMenu.SetActive(false);
+    }
+
+    private void RetryGame()
+    {
+        SceneManager.LoadScene("PrototypeScene");
     }
 
     private void PauseGame()
