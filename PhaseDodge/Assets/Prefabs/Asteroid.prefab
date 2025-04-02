@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
   - component: {fileID: 2531971708258605463}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Asteroid
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -201,3 +201,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd15a67afccaef4aa24cb447eaafb34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidSmallPrefab: {fileID: 4082685579555734100, guid: c18aade764e66124cb7e0e7f85ab3e27, type: 3}

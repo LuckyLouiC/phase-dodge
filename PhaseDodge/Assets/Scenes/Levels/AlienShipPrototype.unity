@@ -2524,7 +2524,9 @@ MonoBehaviour:
   asteroidSpawnRate: 1
   satelliteSpawnRate: 2
   alienShipSpawnRate: 3
-  satellitePaths: []
+  satellitePaths:
+  - {fileID: 11400000, guid: bf4d833a6987667449a049f4de7e9314, type: 2}
+  - {fileID: 11400000, guid: 4c807f370016ca84284ad6f3f6676763, type: 2}
 --- !u!1 &1812964879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2741,11 +2743,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8304898634331687570, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.57
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8304898634331687570, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.62
+      value: 1.36
       objectReference: {fileID: 0}
     - target: {fileID: 8304898634331687570, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2782,6 +2784,10 @@ PrefabInstance:
     - target: {fileID: 8613878064215225064, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_Name
       value: PlayerShip
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613878064215225064, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

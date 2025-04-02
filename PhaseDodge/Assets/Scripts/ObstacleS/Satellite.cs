@@ -42,13 +42,11 @@ public class Satellite : Obstacle
 
         // Calculate the distance to the target waypoint
         float distanceToTarget = Vector3.Distance(currentPosition, targetWaypoint);
-        Debug.Log($"Distance to target: {distanceToTarget}");
 
         if (distanceToTarget > 0.01f) // Use a small tolerance
         {
             // Move towards the target waypoint
             transform.position = Vector3.MoveTowards(currentPosition, targetWaypoint, speed * Time.deltaTime);
-            Debug.Log($"Moving towards target at speed: {speed}");
             SetDirectionToNextWaypoint(); // Update rotation
         }
         else
