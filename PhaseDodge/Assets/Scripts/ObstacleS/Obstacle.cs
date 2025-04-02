@@ -67,7 +67,7 @@ public class Obstacle : MonoBehaviour
     }
 
     // Using transform.up is often cleaner for 2D top-down rotations
-    private void RotateTowardsDirection()
+    protected void RotateTowardsDirection()
     {
         if (direction == Vector3.zero) return; // Don't rotate if direction is zero
 

@@ -12,6 +12,8 @@ public class ObstacleSpawner : MonoBehaviour
     public float satelliteSpawnRate = 2.0f; // More rare
     public float alienShipSpawnRate = 3.0f; // Define as needed
 
+    public SatellitePath[] satellitePaths;
+
     private Camera mainCamera;
 
     void Start()
@@ -78,5 +80,11 @@ public class ObstacleSpawner : MonoBehaviour
         spawnPosition.z = 0; // Ensure the obstacle is at the correct depth
         GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
         obstacle.GetComponent<Obstacle>().SetDirection(direction);
+
+        if (obstaclePrefab == satellitePrefab && satellitePaths.Length > 0)
+        {
+            Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
+            satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
+        }
     }
 }
