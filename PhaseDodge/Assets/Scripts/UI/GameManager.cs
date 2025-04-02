@@ -25,10 +25,9 @@ public class GameManager : MonoBehaviour
 
     private string FormatElapsedTime(float time)
     {
-        int minutes = Mathf.FloorToInt(time / 60F);
-        int seconds = Mathf.FloorToInt(time % 60F);
-        int milliseconds = Mathf.FloorToInt((time * 1000F) % 1000F);
-        return string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+        int seconds = Mathf.FloorToInt(time);
+        int milliseconds = Mathf.FloorToInt((time * 10) % 10); // Get the first digit of milliseconds
+        return string.Format("{0:0}.{1:0}", seconds, milliseconds);
     }
 
     public void GameOver()

@@ -1,6 +1,7 @@
 using System.Threading;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using System.Collections;
 
 public class ObstacleSpawner : MonoBehaviour
 {
@@ -11,57 +12,40 @@ public class ObstacleSpawner : MonoBehaviour
     public float satelliteSpawnRate = 2.0f; // More rare
     public float alienShipSpawnRate = 3.0f; // Define as needed
 
-    private float asteroidSpawnTimer;
-    private float satelliteSpawnTimer;
-    private float alienShipSpawnTimer;
     private Camera mainCamera;
 
     void Start()
     {
-        SetTimers();
         mainCamera = Camera.main;
+        StartCoroutine(SpawnAsteroids());
+        StartCoroutine(SpawnSatellites());
+        StartCoroutine(SpawnAlienShips());
     }
 
-    void Update()
+    private IEnumerator SpawnAsteroids()
     {
-        DecrementTimers();
-
-        CheckTimeToSpawn();
-
-    }
-
-    private void SetTimers()
-    {
-        asteroidSpawnTimer = asteroidSpawnRate;
-        satelliteSpawnTimer = satelliteSpawnRate;
-        alienShipSpawnTimer = alienShipSpawnRate;
-    }
-
-    private void DecrementTimers()
-    {
-        asteroidSpawnTimer -= Time.deltaTime;
-        satelliteSpawnTimer -= Time.deltaTime;
-        alienShipSpawnTimer -= Time.deltaTime;
-    }
-
-    private void CheckTimeToSpawn()
-    {
-        if (asteroidSpawnTimer <= 0)
+        while (true)
         {
+            yield return new WaitForSeconds(asteroidSpawnRate);
             SpawnObstacle(asteroidPrefab);
-            asteroidSpawnTimer = asteroidSpawnRate;
         }
+    }
 
-        if (satelliteSpawnTimer <= 0)
+    private IEnumerator SpawnSatellites()
+    {
+        while (true)
         {
+            yield return new WaitForSeconds(satelliteSpawnRate);
             SpawnObstacle(satellitePrefab);
-            satelliteSpawnTimer = satelliteSpawnRate;
         }
+    }
 
-        if (alienShipSpawnTimer <= 0)
+    private IEnumerator SpawnAlienShips()
+    {
+        while (true)
         {
+            yield return new WaitForSeconds(alienShipSpawnRate);
             SpawnObstacle(alienShipPrefab);
-            alienShipSpawnTimer = alienShipSpawnRate;
         }
     }
 
