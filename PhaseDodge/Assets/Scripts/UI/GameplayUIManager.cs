@@ -29,7 +29,7 @@ public class GameplayUIManager : MonoBehaviour
 
     private void RetryGame()
     {
-        SceneManager.LoadScene("PrototypeScene");
+        SceneManager.LoadScene("BuildTestScene");
         Time.timeScale = 1;
     }
 

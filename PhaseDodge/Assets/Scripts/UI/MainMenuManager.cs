@@ -20,7 +20,7 @@ public class MainMenuManager : MonoBehaviour
 
     void LoadGameScene()
     {
-        SceneManager.LoadScene("PrototypeScene");
+        SceneManager.LoadScene("BuildTestScene");
     }
 
     void LoadOptionsScene()

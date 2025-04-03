@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
   - component: {fileID: -2271526205456121234}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Satellite
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
