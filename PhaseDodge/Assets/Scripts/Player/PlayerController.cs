@@ -28,16 +28,16 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
             Vector3 worldTouchPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
-
-            // Calculate the desired velocity
-            Vector3 desiredVelocity = (worldTouchPosition - transform.position).normalized * maxSpeed;
-
-            // Use SmoothDamp for acceleration
-            currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
-            transform.position += currentVelocity * Time.deltaTime;
-
-            RotateTowards(transform.position + currentVelocity);
+            targetPosition = worldTouchPosition; // Store the touch position
+            RotateTowards(targetPosition); // Rotate towards the stored target
         }
+
+        // Calculate the desired velocity towards the targetPosition
+        Vector3 desiredVelocity = (targetPosition - transform.position).normalized * maxSpeed;
+
+        // Use SmoothDamp for acceleration
+        currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
+        transform.position += currentVelocity * Time.deltaTime;
 
         ClampPositionWithinCameraBounds();
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
