@@ -7,11 +7,11 @@ public class PlayerController : MonoBehaviour
     private Camera mainCamera;
     private GameManager gameManager;
 
-    private Vector3 targetPosition;
-    private Vector3? bufferedTargetPosition = null;
-
-    public float acceleration = 0.3f; // Adjusted for SmoothDamp
+    public float acceleration = 0.3f;
     public float maxSpeed = 1.0f;
+    public float rotationSpeed = 10f; // Adjust for turning speed
+    private Vector3 targetPosition;
+    private Quaternion targetRotation; // Store the target rotation
     private Vector3 currentVelocity = Vector3.zero;
     private Vector3 smoothDampVelocity = Vector3.zero;
 
@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
         targetPosition = transform.position;
         gameManager = FindAnyObjectByType<GameManager>();
+        targetRotation = transform.rotation; // Initialize target rotation
     }
 
     void Update()
@@ -28,30 +29,40 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
             Vector3 worldTouchPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
-            targetPosition = worldTouchPosition; // Store the touch position
-            RotateTowards(targetPosition); // Rotate towards the stored target
+            targetPosition = worldTouchPosition;
+
+            // Calculate and store the target rotation
+            Vector3 direction = targetPosition - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            targetRotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
         }
 
-        // Calculate the desired velocity towards the targetPosition
-        Vector3 desiredVelocity = (targetPosition - transform.position).normalized * maxSpeed;
+        // Rotate towards the stored target rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
 
-        // Use SmoothDamp for acceleration
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
+        float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+        float slowDownDistance = 0.5f;
+
+        if (distanceToTarget < slowDownDistance)
+        {
+            float deceleration = 2.0f - Mathf.Clamp01(distanceToTarget / slowDownDistance);
+            float targetSpeed = maxSpeed * deceleration;
+            Vector3 desiredVelocity = (targetPosition - transform.position).normalized * targetSpeed;
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
+        }
+        else
+        {
+            Vector3 desiredVelocity = (targetPosition - transform.position).normalized * maxSpeed;
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
+        }
+
         transform.position += currentVelocity * Time.deltaTime;
 
         ClampPositionWithinCameraBounds();
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
     }
 
-    private void RotateTowards(Vector3 target)
-    {
-        Vector3 direction = target - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10.0f);
-    }
-
-    void ClampPositionWithinCameraBounds()
+    private void ClampPositionWithinCameraBounds()
     {
         Vector3 position = transform.position;
         Vector3 minScreenBounds = mainCamera.ScreenToWorldPoint(new Vector3(0, 0, transform.position.z - mainCamera.transform.position.z));
