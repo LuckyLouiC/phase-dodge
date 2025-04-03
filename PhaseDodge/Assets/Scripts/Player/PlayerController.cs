@@ -8,7 +8,12 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
 
     private Vector3 targetPosition;
-    private Vector3? bufferedTargetPosition = null;       
+    private Vector3? bufferedTargetPosition = null;
+
+    public float acceleration = 0.3f; // Adjusted for SmoothDamp
+    public float maxSpeed = 1.0f;
+    private Vector3 currentVelocity = Vector3.zero;
+    private Vector3 smoothDampVelocity = Vector3.zero;
 
     void Start()
     {
@@ -22,20 +27,19 @@ public class PlayerController : MonoBehaviour
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
-            bufferedTargetPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
-            RotateTowards(bufferedTargetPosition.Value); // Rotate immediately
-        }
+            Vector3 worldTouchPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 5f);
+            // Calculate the desired velocity
+            Vector3 desiredVelocity = (worldTouchPosition - transform.position).normalized * maxSpeed;
 
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f && bufferedTargetPosition.HasValue)
-        {
-            targetPosition = bufferedTargetPosition.Value;
-            bufferedTargetPosition = null; // Clear the buffered position
+            // Use SmoothDamp for acceleration
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration);
+            transform.position += currentVelocity * Time.deltaTime;
+
+            RotateTowards(transform.position + currentVelocity);
         }
 
         ClampPositionWithinCameraBounds();
-
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
     }
 
@@ -43,7 +47,8 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 direction = target - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10.0f);
     }
 
     void ClampPositionWithinCameraBounds()
