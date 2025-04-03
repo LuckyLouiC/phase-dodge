@@ -4,4 +4,5 @@ using UnityEngine;
 public class SatellitePath : ScriptableObject
 {
     public Vector3[] waypoints;
+
 }

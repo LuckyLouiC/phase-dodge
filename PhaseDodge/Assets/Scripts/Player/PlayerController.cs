@@ -5,8 +5,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private Camera mainCamera;
-    private Vector3 targetPosition;
     private GameManager gameManager;
+
+    private Vector3 targetPosition;
+    private Vector3? bufferedTargetPosition = null;       
 
     void Start()
     {
@@ -20,11 +22,18 @@ public class PlayerController : MonoBehaviour
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
-            targetPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
-            RotateTowards(targetPosition);
+            bufferedTargetPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
+            RotateTowards(bufferedTargetPosition.Value); // Rotate immediately
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 5f);
+
+        if (Vector3.Distance(transform.position, targetPosition) < 0.1f && bufferedTargetPosition.HasValue)
+        {
+            targetPosition = bufferedTargetPosition.Value;
+            bufferedTargetPosition = null; // Clear the buffered position
+        }
+
         ClampPositionWithinCameraBounds();
 
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
