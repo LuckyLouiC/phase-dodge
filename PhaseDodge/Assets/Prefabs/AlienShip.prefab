@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8967146172469447447}
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
-  - component: {fileID: -4593313575543126044}
+  - component: {fileID: 2309313751724043402}
   m_Layer: 8
   m_Name: AlienShip
   m_TagString: Obstacle
@@ -175,7 +175,7 @@ PolygonCollider2D:
       - {x: 0.048564725, y: 0.089921005}
       - {x: -0.04782015, y: 0.09045011}
   m_UseDelaunayMesh: 0
---- !u!114 &-4593313575543126044
+--- !u!114 &2309313751724043402
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,9 +187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d71d85c0916070f4f8427d73c9484fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  predictionTime: 0.5
-  avoidanceRadius: 2.5
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  avoidanceStrength: 2.5
+  predictionTime: 1.5
+  moveSpeed: 1.5
+  turnSpeed: 5
