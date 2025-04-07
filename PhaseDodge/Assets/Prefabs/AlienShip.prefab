@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
   - component: {fileID: -4593313575543126044}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: AlienShip
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -188,8 +188,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   predictionTime: 0.5
-  avoidanceRadius: 0.75
+  avoidanceRadius: 2.5
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
-  avoidanceStrength: 1.5
+  avoidanceStrength: 2.5

@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/MainMenuScene.unity
     guid: a508b8708d53a1b489ce4d69fba3edf9
   - enabled: 0
-    path: Assets/Scenes/Levels/PrototypeScene.unity
+    path: Assets/Scenes/Levels/OldTestScenes/PrototypeScene.unity
     guid: 55debd147ac9096448503d7ba68ceef2
   - enabled: 1
     path: Assets/Scenes/Levels/BuildTestScene.unity

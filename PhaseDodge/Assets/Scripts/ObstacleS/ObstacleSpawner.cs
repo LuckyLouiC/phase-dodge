@@ -21,7 +21,7 @@ public class ObstacleSpawner : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        SetStage(1); // Start with stage 1
+        SetStage(3); // Start with stage 1
     }
 
     public void SetStage(int stage)

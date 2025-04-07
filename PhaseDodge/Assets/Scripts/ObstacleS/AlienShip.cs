@@ -5,9 +5,9 @@ public class AlienShip : Obstacle
 {
     private PlayerController player;
     public float predictionTime = 0.5f; // How far into the future to predict the player's position
-    public float avoidanceRadius = 1.0f; // Radius to check for nearby obstacles
+    public float avoidanceRadius = 0.5f; // Radius to check for nearby obstacles
     public LayerMask obstacleLayer; // Layer containing obstacles
-    public float avoidanceStrength = 1.5f; // Strength of the avoidance steering
+    public float avoidanceStrength = 5.0f; // Strength of the avoidance steering
 
     protected override void Start()
     {
@@ -55,7 +55,7 @@ public class AlienShip : Obstacle
 
             foreach (var hitCollider in hitColliders)
             {
-                if (hitCollider.gameObject != gameObject && hitCollider.GetComponent<AlienShip>() != null) // Avoid other AlienShip instances
+                if (hitCollider.gameObject != gameObject && hitCollider.GetComponent<AlienShip>() == null) // Avoid other AlienShip instances
                 {
                     Vector3 obstacleClosest = hitCollider.ClosestPoint(transform.position);
                     float distanceSqr = (transform.position - obstacleClosest).sqrMagnitude;
@@ -78,6 +78,7 @@ public class AlienShip : Obstacle
                 // Gradually blend the avoidance direction with the current direction
                 direction = Vector3.Lerp(direction, avoidanceDirection.normalized, avoidanceStrength * Time.deltaTime).normalized;
                 Debug.Log($"Avoiding obstacle, new direction: {direction}");
+                MoveInDirection();
                 return; // Exit early to prioritize avoidance
             }
         }
@@ -113,7 +114,14 @@ public class AlienShip : Obstacle
         }
 
         // Move towards the target direction
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
+        MoveInDirection();
+    }
+
+    private void MoveInDirection()
+    {
+        // Ensure the speed remains constant during avoidance
+        Vector3 moveDirection = direction.normalized;
+        transform.Translate(moveDirection * speed * Time.deltaTime, Space.World);
         RotateTowardsDirection();
     }
 

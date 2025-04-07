@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         elapsedTime = 0;
-        SetGameStage(1);
+        SetGameStage(3);
     }
 
     // Update is called once per frame
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         // Update game stage based on elapsed time
         if (elapsedTime >= 20 && currentStage == 1) // Stage 2 starts at 20 seconds
         {
-            SetGameStage(2);
+            SetGameStage(3);
         }
         else if (elapsedTime >= 40 && currentStage == 2) // Stage 3 starts at 40 seconds
         {
