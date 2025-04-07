@@ -5,16 +5,16 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] private Button playButton;
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button creditsButton;
+/*    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button creditsButton;*/
     [SerializeField] private Button quitButton;
 
     void Start()
     {
         // Add listeners to the buttons
         playButton.onClick.AddListener(LoadGameScene);
-        optionsButton.onClick.AddListener(LoadOptionsScene);
-        creditsButton.onClick.AddListener(LoadCreditsScene);
+/*        optionsButton.onClick.AddListener(LoadOptionsScene);
+        creditsButton.onClick.AddListener(LoadCreditsScene);*/
         quitButton.onClick.AddListener(QuitGame);
     }
 
@@ -23,7 +23,7 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene("BuildTestScene");
     }
 
-    void LoadOptionsScene()
+/*    void LoadOptionsScene()
     {
         SceneManager.LoadScene("OptionsScene");
     }
@@ -31,7 +31,7 @@ public class MainMenuManager : MonoBehaviour
     void LoadCreditsScene()
     {
         SceneManager.LoadScene("CreditsScene");
-    }
+    }*/
 
     void QuitGame()
     {
