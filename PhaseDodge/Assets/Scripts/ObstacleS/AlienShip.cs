@@ -81,6 +81,18 @@ public class AlienShip : Obstacle
         transform.position = position;
     }
 
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        // Reset properties like position, rotation, etc.
+    }
+
+    public override void OnObjectDespawn()
+    {
+        base.OnObjectDespawn();
+        // Stop any particle effects or other temporary effects
+    }
+
     /*private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Obstacle"))

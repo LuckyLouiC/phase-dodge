@@ -81,4 +81,16 @@ public class Satellite : Obstacle
             RotateTowardsDirection();
         }
     }
+
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        // Reset satellite properties here (e.g., health, etc.)
+    }
+
+    public override void OnObjectDespawn()
+    {
+        base.OnObjectDespawn();
+        // Stop any particle effects or other temporary effects
+    }
 }

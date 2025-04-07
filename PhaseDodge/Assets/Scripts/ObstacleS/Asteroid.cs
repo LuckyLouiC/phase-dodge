@@ -79,4 +79,19 @@ public class Asteroid : Obstacle
             Debug.LogError("AsteroidSmallPrefab is not assigned in the Asteroid script!");
         }
     }
+
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        // Reset properties like position, rotation, etc.
+        hasSplit = false; // Reset the split state
+        transform.rotation = Quaternion.identity; // Reset rotation
+        transform.localScale = Vector3.one; // Reset scale
+    }
+
+    public override void OnObjectDespawn()
+    {
+        base.OnObjectDespawn();
+        // Stop any particle effects or other temporary states
+    }
 }

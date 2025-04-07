@@ -9,17 +9,21 @@ public class Obstacle : MonoBehaviour
     protected Camera mainCamera;
     protected Vector3 direction;
     protected bool hasEnteredScreen = false;
+    
     protected PolygonCollider2D obstacleCollider2D;
+    private GameObject myPrefab; // Store the original prefab
+
+    public bool isPooled = false; // Flag to track if the object came from the pool
 
     protected virtual void Start()
     {
         mainCamera = Camera.main;
         obstacleCollider2D = GetComponent<PolygonCollider2D>();
-        if (obstacleCollider2D == null )
+        if (obstacleCollider2D == null)
         {
             Debug.LogError("Obstacle is missing a PolygonCollider2D component");
         }
-
+        myPrefab = transform.parent != null ? transform.parent.gameObject : gameObject; // Store the original prefab
     }
 
     protected virtual void Update()
@@ -28,9 +32,17 @@ public class Obstacle : MonoBehaviour
 
         if (hasEnteredScreen && IsFullyOffScreen())
         {
-            Destroy(gameObject);
+            if (isPooled)
+            {
+                ObjectPool.Instance.ReturnToPool(myPrefab, gameObject); // Return to pool if it came from the pool
+            }
+            else
+            {
+                Destroy(gameObject); // Otherwise, detroy it
+            }
+            ObjectPool.Instance.ReturnToPool(myPrefab, gameObject); // Use myPrefab
         }
-        else if (!hasEnteredScreen && IsOnScreen()) // Check if it has become visible
+        else if (!hasEnteredScreen && IsOnScreen())
         {
             hasEnteredScreen = true;
         }
@@ -39,12 +51,12 @@ public class Obstacle : MonoBehaviour
     public void SetDirection(Vector3 direction)
     {
         this.direction = direction.normalized;
-        RotateTowardsDirection(); // Set initial rotation based on direction
+        RotateTowardsDirection();
     }
 
     protected bool IsFullyOffScreen()
     {
-        if (obstacleCollider2D == null) return false; // Avoid errors if collider is missing
+        if (obstacleCollider2D == null) return false;
 
         Bounds bounds = obstacleCollider2D.bounds;
         Vector3 minScreenBounds = mainCamera.WorldToScreenPoint(bounds.min);
@@ -61,16 +73,23 @@ public class Obstacle : MonoBehaviour
         Vector3 minScreenPoint = mainCamera.WorldToViewportPoint(bounds.min);
         Vector3 maxScreenPoint = mainCamera.WorldToViewportPoint(bounds.max);
 
-        // Check if the bounds rectangle overlaps with the viewport (0,0 to 1,1)
         return maxScreenPoint.x > 0 && minScreenPoint.x < 1 && maxScreenPoint.y > 0 && minScreenPoint.y < 1;
     }
 
-    // Using transform.up is often cleaner for 2D top-down rotations
     protected void RotateTowardsDirection()
     {
-        if (direction == Vector3.zero) return; // Don't rotate if direction is zero
+        if (direction == Vector3.zero) return;
 
-        // Set the local 'up' vector (Y-axis) to point in the direction of movement
         transform.up = direction;
+    }
+
+    public virtual void OnObjectSpawn()
+    {
+        hasEnteredScreen = false;
+    }
+
+    public virtual void OnObjectDespawn()
+    {
+        // Reset any temporary state here (e.g., particle effects)
     }
 }
