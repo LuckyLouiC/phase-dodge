@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         elapsedTime = 0;
-        SetGameStage(3);
+        SetGameStage(1);
     }
 
     // Update is called once per frame

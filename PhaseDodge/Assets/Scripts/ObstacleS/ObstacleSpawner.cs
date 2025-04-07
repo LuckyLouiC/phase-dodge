@@ -8,8 +8,8 @@ public class ObstacleSpawner : MonoBehaviour
     public GameObject satellitePrefab;
     public GameObject alienShipPrefab;
     public float asteroidSpawnRate = 2.0f;
-    public float satelliteSpawnRate = 2.5f; // More rare
-    public float alienShipSpawnRate = 4.0f; // Define as needed
+    public float satelliteSpawnRate = 4.5f; // More rare
+    public float alienShipSpawnRate = 8.0f; // Define as needed
 
     public SatellitePath[] satellitePaths;
 
@@ -21,7 +21,7 @@ public class ObstacleSpawner : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        SetStage(3); // Start with stage 1
+        SetStage(1); // Start with stage 1
     }
 
     public void SetStage(int stage)
@@ -35,19 +35,13 @@ public class ObstacleSpawner : MonoBehaviour
         switch (stage)
         {
             case 1:
-                asteroidSpawnRate = 2.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 break;
             case 2:
-                asteroidSpawnRate = 1.5f;
-                satelliteSpawnRate = 3.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 break;
             case 3:
-                asteroidSpawnRate = 1.0f;
-                satelliteSpawnRate = 2.5f;
-                alienShipSpawnRate = 4.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 alienShipCoroutine = StartCoroutine(SpawnAlienShips());

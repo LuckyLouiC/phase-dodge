@@ -25,7 +25,6 @@ public class Obstacle : MonoBehaviour
     protected virtual void Update()
     {
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
-        //RotateTowardsDirection();
 
         if (hasEnteredScreen && IsFullyOffScreen())
         {
