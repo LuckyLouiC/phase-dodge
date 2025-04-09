@@ -47,13 +47,6 @@ public class ObstacleSpawner : MonoBehaviour
             return;
         }
 
-        // Validate prefab assignments
-        if (asteroidPrefab == null || smallAsteroidPrefab == null || satellitePrefab == null || alienShipPrefab == null)
-        {
-            Debug.LogError("ObstacleSpawner: One or more obstacle prefabs are not assigned!");
-            return;
-        }
-
         // Initialize object pools for each obstacle type
         asteroidPool = CreateObjectPool(asteroidPrefab);
         smallAsteroidPool = CreateObjectPool(smallAsteroidPrefab); // Initialize small asteroid pool
@@ -69,7 +62,7 @@ public class ObstacleSpawner : MonoBehaviour
 
     private ObjectPool<GameObject> CreateObjectPool(GameObject prefab)
     {
-        return new ObjectPool<GameObject>(
+        ObjectPool<GameObject> pool = new ObjectPool<GameObject>(
             // Create a new object
             () =>
             {
@@ -81,13 +74,13 @@ public class ObstacleSpawner : MonoBehaviour
             (obj) =>
             {
                 obj.SetActive(true);
-                Debug.Log($"ObjectPool: Retrieved {obj.name} from pool.");
+                Debug.Log($"ObjectPool: Get from pool: {obj.name}");
             },
             // On object return to the pool
             (obj) =>
             {
                 obj.SetActive(false);
-                Debug.Log($"ObjectPool: Returned {obj.name} to pool.");
+                Debug.Log($"ObjectPool: Return to pool: {obj.name}");
             },
             // On object destruction
             (obj) =>
@@ -99,6 +92,18 @@ public class ObstacleSpawner : MonoBehaviour
             poolSize, // Default pool size
             maxPoolSize // Maximum pool size
         );
+
+        // Pre-instantiate objects up to the initial pool size
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(prefab); // Explicitly create a new instance
+            obj.SetActive(false); // Set the object to inactive
+            pool.Release(obj); // Add the new instance to the pool
+            Debug.Log($"ObjectPool: Pre-instantiated object {i + 1}/{poolSize} for {prefab.name}.");
+        }
+
+        Debug.Log($"ObjectPool: Pre-instantiated {poolSize} objects for {prefab.name}.");
+        return pool;
     }
 
     public void SetStage(int stage)
@@ -190,20 +195,30 @@ public class ObstacleSpawner : MonoBehaviour
 
         // Get an obstacle from the pool
         GameObject obstacle = pool.Get();
-        obstacle.transform.position = spawnPosition;
-        obstacle.transform.rotation = Quaternion.identity;
-
-        // Initialize the obstacle
-        Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
-        obstacleComponent.SetDirection(direction);
-        obstacleComponent.originalPrefab = prefab;
-        obstacleComponent.OnObjectSpawn();
-
-        // Special handling for satellites
-        if (prefab == satellitePrefab && satellitePaths.Length > 0)
+        if (obstacle != null)
         {
-            Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-            satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
+            obstacle.transform.position = spawnPosition;
+            obstacle.transform.rotation = Quaternion.identity;
+
+            // Initialize the obstacle
+            Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
+            obstacleComponent.SetDirection(direction);
+            obstacleComponent.originalPrefab = prefab;
+
+            // Special handling for satellites: Assign the path *before* OnObjectSpawn()
+            if (prefab == satellitePrefab && satellitePaths.Length > 0)
+            {
+                Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
+                satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
+                Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
+            }
+
+            obstacleComponent.OnObjectSpawn(); // Call OnObjectSpawn *after* path assignment
+        }
+        else
+        {
+            Debug.LogError($"ObstacleSpawner: SpawnObstacle - Failed to get object from pool for {prefab.name}");
+            // Handle this case appropriately (e.g., delay spawning, increase pool size, etc.)
         }
     }
 
@@ -270,6 +285,10 @@ public class ObstacleSpawner : MonoBehaviour
                 Debug.LogError($"ObstacleSpawner: DestroyObstacle - Obstacle component is null on {obstacle.name}. Destroying object.");
                 Destroy(obstacle);
             }
+        }
+        else
+        {
+            Debug.LogError("ObstacleSpawner: DestroyObstacle - Obstacle GameObject is null!");
         }
     }
 }

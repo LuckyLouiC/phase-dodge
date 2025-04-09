@@ -2028,6 +2028,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1794813332}
   - component: {fileID: 1794813333}
+  - component: {fileID: 1794813334}
   m_Layer: 0
   m_Name: ObstacleSpawner
   m_TagString: Untagged
@@ -2072,6 +2073,22 @@ MonoBehaviour:
   satellitePaths:
   - {fileID: 11400000, guid: bf4d833a6987667449a049f4de7e9314, type: 2}
   - {fileID: 11400000, guid: 60f6ab486afaaaf49ab05516a92261f9, type: 2}
+--- !u!114 &1794813334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794813331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468695ac4294a0f4d8b85e5e4607202b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  satellitePaths:
+  - {fileID: 11400000, guid: bf4d833a6987667449a049f4de7e9314, type: 2}
+  - {fileID: 11400000, guid: 60f6ab486afaaaf49ab05516a92261f9, type: 2}
+  colors: 0000000002000000
 --- !u!1 &1940270626
 GameObject:
   m_ObjectHideFlags: 0

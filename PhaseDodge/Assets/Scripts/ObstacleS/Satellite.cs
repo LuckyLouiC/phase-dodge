@@ -18,7 +18,8 @@ public class Satellite : Obstacle
 
         if (path != null && path.waypoints != null && path.waypoints.Length > 0)
         {
-            transform.position = path.waypoints[0];
+            transform.position = path.waypoints[0]; // Explicitly set position to the first waypoint
+            Debug.Log($"Satellite: Spawned at first waypoint: {transform.position}");
             SetDirectionToNextWaypoint();
         }
         else

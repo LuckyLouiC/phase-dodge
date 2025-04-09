@@ -79,11 +79,13 @@ public class Asteroid : Obstacle
             // Initialize the small asteroids
             smallAsteroid1.transform.position = transform.position;
             smallAsteroid1.transform.rotation = Quaternion.identity;
+            smallAsteroid1.GetComponent<Obstacle>().originalPrefab = asteroidSmallPrefab; // Set originalPrefab
             smallAsteroid1.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
             smallAsteroid1.GetComponent<Obstacle>().OnObjectSpawn();
 
             smallAsteroid2.transform.position = transform.position;
             smallAsteroid2.transform.rotation = Quaternion.identity;
+            smallAsteroid2.GetComponent<Obstacle>().originalPrefab = asteroidSmallPrefab; // Set originalPrefab
             smallAsteroid2.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
             smallAsteroid2.GetComponent<Obstacle>().OnObjectSpawn();
 
