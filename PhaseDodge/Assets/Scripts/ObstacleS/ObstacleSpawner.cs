@@ -203,31 +203,30 @@ public class ObstacleSpawner : MonoBehaviour
 
         // Get an obstacle from the pool
         GameObject obstacle = pool.Get();
-        if (obstacle != null)
+        if (obstacle == null)
         {
-            obstacle.transform.position = spawnPosition;
-            obstacle.transform.rotation = Quaternion.identity;
-
-            // Initialize the obstacle
-            Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
-            obstacleComponent.SetDirection(direction);
-            obstacleComponent.originalPrefab = prefab;
-
-            // Special handling for satellites: Assign the path *before* OnObjectSpawn()
-            if (prefab == satellitePrefab && satellitePaths.Length > 0)
-            {
-                Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-                satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
-                Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
-            }
-
-            obstacleComponent.OnObjectSpawn(); // Call OnObjectSpawn *after* path assignment
+            Debug.LogError($"ObstacleSpawner: SpawnObstacle - Failed to get object from pool for {prefab.name}. Spawning delayed.");
+            // Consider delaying spawning here or increasing pool size
+            return;
         }
-        else
+        obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity); // More efficient
+        obstacle.SetActive(true);
+
+        // Initialize the obstacle
+        Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
+        obstacleComponent.SetDirection(direction);
+        obstacleComponent.originalPrefab = prefab;
+
+        // Special handling for satellites: Assign the path *before* OnObjectSpawn()
+        if (prefab == satellitePrefab && satellitePaths.Length > 0)
         {
-            Debug.LogError($"ObstacleSpawner: SpawnObstacle - Failed to get object from pool for {prefab.name}");
-            // Handle this case appropriately (e.g., delay spawning, increase pool size, etc.)
+            Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
+            satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
+            Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
         }
+
+        obstacleComponent.OnObjectSpawn(); // Call OnObjectSpawn *after* path assignment
+
     }
 
     public GameObject GetPooledObject(GameObject prefab)

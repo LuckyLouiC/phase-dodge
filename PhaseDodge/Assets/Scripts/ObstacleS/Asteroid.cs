@@ -1,4 +1,3 @@
-// Example: Asteroid.cs
 using UnityEngine;
 
 public class Asteroid : Obstacle

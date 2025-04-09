@@ -47,7 +47,8 @@ public class AlienShip : Obstacle
 
         // Gradually adjust the direction using steeringSpeed
         Vector3 targetDirection = (predictedPosition - transform.position).normalized;
-        direction = Vector3.Lerp(direction, targetDirection, steeringSpeed * Time.deltaTime);
+        float maxSteerAngle = 5.0f * Time.deltaTime; // Maximum angle to steer in one frame
+        direction = Vector3.RotateTowards(direction, targetDirection, maxSteerAngle, 0.0f);
 
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
         RotateTowardsDirection();
