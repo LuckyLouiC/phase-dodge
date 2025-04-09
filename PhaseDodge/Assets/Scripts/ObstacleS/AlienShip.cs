@@ -10,7 +10,7 @@ public class AlienShip : Obstacle
     protected override void Start()
     {
         base.Start();
-        speed = 1.5f;
+        speed = 0.75f;
         player = Object.FindAnyObjectByType<PlayerController>();
         if (player == null)
         {

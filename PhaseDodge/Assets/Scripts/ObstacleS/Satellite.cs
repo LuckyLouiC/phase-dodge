@@ -9,7 +9,7 @@ public class Satellite : Obstacle
     protected override void Start()
     {
         base.Start();
-        speed = 1.0f;
+        speed = 0.45f;
     }
 
     public override void OnObjectSpawn()

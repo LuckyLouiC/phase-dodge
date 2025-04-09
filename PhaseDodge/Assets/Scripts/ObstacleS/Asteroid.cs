@@ -37,6 +37,10 @@ public class Asteroid : Obstacle
         sizeVariation = Random.Range(sizeVariationMin, sizeVariationMax);
         rotationDirection = Random.Range(0, 2) == 0 ? 1 : -1;
         transform.localScale *= sizeVariation;
+
+        // Adjust speed for asteroids
+        speed = Random.Range(0.3f, 0.7f); // Set a reasonable speed range
+        Debug.Log($"Asteroid: OnObjectSpawn - Speed set to {speed}");
     }
 
     protected override void Update()

@@ -121,14 +121,14 @@ public class ObstacleSpawner : MonoBehaviour
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 break;
             case 2:
-                asteroidSpawnRate = 1.5f;
-                satelliteSpawnRate = 3.0f;
+                asteroidSpawnRate = 2.0f;
+                satelliteSpawnRate = 4.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 break;
             case 3:
-                asteroidSpawnRate = 1.0f;
-                satelliteSpawnRate = 2.5f;
+                asteroidSpawnRate = 2.0f;
+                satelliteSpawnRate = 4.0f;
                 alienShipSpawnRate = 10.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
@@ -192,6 +192,14 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         spawnPosition.z = 0;
+
+        // Apply a random angle spread for asteroids to ensure they still move on-screen
+        if (prefab == asteroidPrefab)
+        {
+            float angleSpread = 30f;
+            float randomAngle = Random.Range(-angleSpread, angleSpread);
+            direction = Quaternion.Euler(0f, 0f, randomAngle) * direction;
+        }
 
         // Get an obstacle from the pool
         GameObject obstacle = pool.Get();

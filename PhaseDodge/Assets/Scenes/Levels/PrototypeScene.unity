@@ -2088,7 +2088,7 @@ MonoBehaviour:
   satellitePaths:
   - {fileID: 11400000, guid: bf4d833a6987667449a049f4de7e9314, type: 2}
   - {fileID: 11400000, guid: 60f6ab486afaaaf49ab05516a92261f9, type: 2}
-  colors: 0000000002000000
+  colors: 000000000200000001000000
 --- !u!1 &1940270626
 GameObject:
   m_ObjectHideFlags: 0
@@ -2397,7 +2397,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4151406793638510454, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_Simulated
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8304898634331687570, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_LocalPosition.x
