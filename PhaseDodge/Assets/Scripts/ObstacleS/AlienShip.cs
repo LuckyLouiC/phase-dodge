@@ -5,6 +5,7 @@ public class AlienShip : Obstacle
     private PlayerController player;
     public float predictionTime = 0.5f; // How far into the future to predict the player's position
     public float steeringSpeed = 2.0f; // Speed at which the ship adjusts its direction
+    public float sizeVariation = 1.0f; // Adjustable in editor
 
     protected override void Start()
     {
@@ -21,6 +22,8 @@ public class AlienShip : Obstacle
     {
         base.OnObjectSpawn();
         // Reset any specific properties for alien ships here
+        transform.localScale = Vector3.one;
+        transform.localScale *= sizeVariation; // Apply size variation
     }
 
     protected override void Update()

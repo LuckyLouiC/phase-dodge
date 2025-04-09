@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d71d85c0916070f4f8427d73c9484fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalPrefab: {fileID: 0}
   predictionTime: 1.5
-  moveSpeed: 1.5
-  turnSpeed: 5
+  steeringSpeed: 2
+  sizeVariation: 0.5

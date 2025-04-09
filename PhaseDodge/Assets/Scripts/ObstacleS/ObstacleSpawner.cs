@@ -16,7 +16,7 @@ public class ObstacleSpawner : MonoBehaviour
     public GameObject satellitePrefab;
     public float satelliteSpawnRate = 2.5f;
     public GameObject alienShipPrefab;
-    public float alienShipSpawnRate = 4.0f;
+    public float alienShipSpawnRate = 10.0f;
 
     [Header("Satellite Paths")]
     public SatellitePath[] satellitePaths;
@@ -129,7 +129,7 @@ public class ObstacleSpawner : MonoBehaviour
             case 3:
                 asteroidSpawnRate = 1.0f;
                 satelliteSpawnRate = 2.5f;
-                alienShipSpawnRate = 4.0f;
+                alienShipSpawnRate = 10.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 alienShipCoroutine = StartCoroutine(SpawnAlienShips());

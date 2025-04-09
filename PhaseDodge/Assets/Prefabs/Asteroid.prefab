@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8967146172469447447}
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
-  - component: {fileID: 1736374445495076922}
+  - component: {fileID: -3591663130458648885}
   m_Layer: 8
   m_Name: Asteroid
   m_TagString: Obstacle
@@ -189,7 +189,7 @@ PolygonCollider2D:
       - {x: 0.25328386, y: -0.15194319}
       - {x: 0.26523823, y: -0.11180955}
   m_UseDelaunayMesh: 0
---- !u!114 &1736374445495076922
+--- !u!114 &-3591663130458648885
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -201,7 +201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd15a67afccaef4aa24cb447eaafb34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalPrefab: {fileID: 0}
   asteroidSmallPrefab: {fileID: 4082685579555734100, guid: c18aade764e66124cb7e0e7f85ab3e27, type: 3}
   rotationSpeed: 10
-  rotationDirection: 1
-  sizeVariation: 1
+  rotationSpeedMin: 75
+  rotationSpeedMax: 140
+  sizeVariationMin: 0.5
+  sizeVariationMax: 1

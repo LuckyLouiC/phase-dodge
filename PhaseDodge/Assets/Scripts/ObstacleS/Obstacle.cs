@@ -83,6 +83,7 @@ public class Obstacle : MonoBehaviour
     public virtual void OnObjectDespawn()
     {
         Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
+        transform.localScale = Vector3.one; // Reset scale when despawning
     }
 
     protected virtual void ReturnToSpawner()

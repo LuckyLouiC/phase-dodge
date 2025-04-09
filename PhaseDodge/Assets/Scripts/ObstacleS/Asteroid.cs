@@ -8,8 +8,8 @@ public class Asteroid : Obstacle
 
     private int rotationDirection = 1;
     private float currentRotation;
-    public float rotationSpeed = 10.0f; // Adjustable in editor
     public float sizeVariation = 1.0f; // Adjustable in editor
+    public float rotationSpeed = 10.0f; // Adjustable in editor
     public float rotationSpeedMin = 75.0f;
     public float rotationSpeedMax = 140.0f;
     public float sizeVariationMin = 0.50f;

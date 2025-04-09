@@ -3,8 +3,8 @@ using UnityEngine;
 public class Satellite : Obstacle
 {
     public SatellitePath path;
-    public float sizeVariation;
     private int currentWaypointIndex = 0;
+    public float sizeVariation; // Smaller size variation for satellites
 
     protected override void Start()
     {
@@ -15,8 +15,11 @@ public class Satellite : Obstacle
     public override void OnObjectSpawn()
     {
         base.OnObjectSpawn();
-        currentWaypointIndex = 0;
+
+        transform.localScale = Vector3.one;
         transform.localScale *= sizeVariation;
+
+        currentWaypointIndex = 0;
 
         if (path != null && path.waypoints != null && path.waypoints.Length > 0)
         {
