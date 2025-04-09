@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Satellite : Obstacle
@@ -10,22 +9,28 @@ public class Satellite : Obstacle
     {
         base.Start();
         speed = 1.0f;
-        if (path == null || path.waypoints.Length < 2)
+    }
+
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        currentWaypointIndex = 0;
+
+        if (path != null && path.waypoints != null && path.waypoints.Length > 0)
         {
-            Debug.LogError("Satellite is missing a valid path!");
-            Destroy(gameObject);
+            transform.position = path.waypoints[0];
+            SetDirectionToNextWaypoint();
         }
         else
         {
-            // Set initial position to the first waypoint
-            transform.position = path.waypoints[0];
-            SetDirectionToNextWaypoint();
+            Debug.LogError("Satellite: Path is null or invalid. Returning to spawner.");
+            ReturnToSpawner();
         }
     }
 
     protected override void Update()
     {
-        if (path != null && path.waypoints.Length >= 2)
+        if (path != null && path.waypoints.Length > 1)
         {
             MoveAlongPath();
         }
@@ -35,45 +40,25 @@ public class Satellite : Obstacle
         }
     }
 
-    void MoveAlongPath()
+    private void MoveAlongPath()
     {
+        if (currentWaypointIndex >= path.waypoints.Length - 1)
+        {
+            ReturnToSpawner(); // Return to the pool when the path is complete
+            return;
+        }
+
         Vector3 targetWaypoint = path.waypoints[currentWaypointIndex + 1];
-        Vector3 currentPosition = transform.position;
+        transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
 
-        // Calculate the distance to the target waypoint
-        float distanceToTarget = Vector3.Distance(currentPosition, targetWaypoint);
-
-        if (distanceToTarget > 0.01f) // Use a small tolerance
+        if (Vector3.Distance(transform.position, targetWaypoint) < 0.1f)
         {
-            // Move towards the target waypoint
-            transform.position = Vector3.MoveTowards(currentPosition, targetWaypoint, speed * Time.deltaTime);
-            SetDirectionToNextWaypoint(); // Update rotation
-        }
-        else
-        {
-            // Reached the target waypoint, move to the next one
             currentWaypointIndex++;
-            if (currentWaypointIndex >= path.waypoints.Length - 1)
-            {
-                // Optionally loop the path or destroy the satellite
-                Destroy(gameObject); // For now, let's destroy it at the end
-                return;
-            }
             SetDirectionToNextWaypoint();
-        }
-
-        // Check if fully off-screen (using base logic)
-        if (hasEnteredScreen && IsFullyOffScreen())
-        {
-            Destroy(gameObject);
-        }
-        else if (!hasEnteredScreen && IsOnScreen())
-        {
-            hasEnteredScreen = true;
         }
     }
 
-    void SetDirectionToNextWaypoint()
+    private void SetDirectionToNextWaypoint()
     {
         if (currentWaypointIndex < path.waypoints.Length - 1)
         {
@@ -82,15 +67,9 @@ public class Satellite : Obstacle
         }
     }
 
-    public override void OnObjectSpawn()
-    {
-        base.OnObjectSpawn();
-        // Reset satellite properties here (e.g., health, etc.)
-    }
-
     public override void OnObjectDespawn()
     {
         base.OnObjectDespawn();
-        // Stop any particle effects or other temporary effects
+        // Add any cleanup logic specific to satellites here
     }
 }

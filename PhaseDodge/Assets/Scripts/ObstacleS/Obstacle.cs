@@ -1,7 +1,4 @@
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Obstacle : MonoBehaviour
 {
@@ -9,11 +6,8 @@ public class Obstacle : MonoBehaviour
     protected Camera mainCamera;
     protected Vector3 direction;
     protected bool hasEnteredScreen = false;
-    
     protected PolygonCollider2D obstacleCollider2D;
-    private GameObject myPrefab; // Store the original prefab
-
-    public bool isPooled = false; // Flag to track if the object came from the pool
+    [HideInInspector] public GameObject originalPrefab; // Store the original prefab (assigned by ObstacleSpawner)
 
     protected virtual void Start()
     {
@@ -21,26 +15,22 @@ public class Obstacle : MonoBehaviour
         obstacleCollider2D = GetComponent<PolygonCollider2D>();
         if (obstacleCollider2D == null)
         {
-            Debug.LogError("Obstacle is missing a PolygonCollider2D component");
+            Debug.LogError("Obstacle is missing a PolygonCollider2D component. Disabling the obstacle.");
+            gameObject.SetActive(false); // Disable the obstacle if collider is missing
+            return;
         }
-        myPrefab = transform.parent != null ? transform.parent.gameObject : gameObject; // Store the original prefab
+        Debug.Log("Obstacle: Start - " + gameObject.name + " (originalPrefab: " + (originalPrefab != null ? originalPrefab.name : "null") + ")");
     }
 
     protected virtual void Update()
     {
+        // Move the obstacle in the specified direction
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
 
+        // Check if the obstacle has left the screen
         if (hasEnteredScreen && IsFullyOffScreen())
         {
-            if (isPooled)
-            {
-                ObjectPool.Instance.ReturnToPool(myPrefab, gameObject); // Return to pool if it came from the pool
-            }
-            else
-            {
-                Destroy(gameObject); // Otherwise, detroy it
-            }
-            ObjectPool.Instance.ReturnToPool(myPrefab, gameObject); // Use myPrefab
+            ReturnToSpawner();
         }
         else if (!hasEnteredScreen && IsOnScreen())
         {
@@ -73,6 +63,7 @@ public class Obstacle : MonoBehaviour
         Vector3 minScreenPoint = mainCamera.WorldToViewportPoint(bounds.min);
         Vector3 maxScreenPoint = mainCamera.WorldToViewportPoint(bounds.max);
 
+        // Check if the bounds rectangle overlaps with the viewport (0,0 to 1,1)
         return maxScreenPoint.x > 0 && minScreenPoint.x < 1 && maxScreenPoint.y > 0 && minScreenPoint.y < 1;
     }
 
@@ -85,11 +76,26 @@ public class Obstacle : MonoBehaviour
 
     public virtual void OnObjectSpawn()
     {
+        Debug.Log("Obstacle: OnObjectSpawn - " + gameObject.name);
         hasEnteredScreen = false;
     }
 
     public virtual void OnObjectDespawn()
     {
-        // Reset any temporary state here (e.g., particle effects)
+        Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
+    }
+
+    protected virtual void ReturnToSpawner()
+    {
+        if (originalPrefab == null)
+        {
+            Debug.LogWarning($"Obstacle: ReturnToSpawner - originalPrefab is null for {gameObject.name}. Destroying object.");
+            Destroy(gameObject);
+            return;
+        }
+
+        // Return the object to the appropriate pool in ObstacleSpawner
+        Debug.Log($"Obstacle: ReturnToSpawner - Returning {gameObject.name} to spawner.");
+        ObstacleSpawner.Instance.DestroyObstacle(gameObject);
     }
 }

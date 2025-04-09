@@ -1,3 +1,4 @@
+// Example: Asteroid.cs
 using UnityEngine;
 
 public class Asteroid : Obstacle
@@ -5,43 +6,44 @@ public class Asteroid : Obstacle
     public GameObject asteroidSmallPrefab;
     private bool hasSplit = false;
 
-    private int rotationDirection = 1; // 1 for clockwise, -1 for counter-clockwise
-    private float currentRotation; // Current rotation angle in degrees
-    private float rotationSpeed; // Speed of rotation in degrees per second
-    private float sizeVariation; // Variation in size
-
-    // Rotation speed parameters
-    [Header("RotationParameters")]
+    private int rotationDirection = 1;
+    private float currentRotation;
+    public float rotationSpeed = 10.0f; // Adjustable in editor
+    public float sizeVariation = 1.0f; // Adjustable in editor
     public float rotationSpeedMin = 75.0f;
     public float rotationSpeedMax = 140.0f;
-    [Header("SizeVarianceParameters")]
     public float sizeVariationMin = 0.50f;
     public float sizeVariationMax = 1.0f;
-
 
     protected override void Start()
     {
         base.Start();
         if (asteroidSmallPrefab == null)
         {
-            Debug.LogError("asteroidSmallPrefab prefab is NULL in Start()!");
+            Debug.LogError("AsteroidSmallPrefab is not assigned in the Asteroid script! Disabling asteroid.");
+            gameObject.SetActive(false); // Disable the asteroid if prefab is missing
         }
-        else
-        {
-            Debug.Log("asteroidSmallPrefab prefab is assigned in Start():" + asteroidSmallPrefab.name);
-        }
+    }
 
-        // Set rotation and size variation
-        rotationSpeed = Random.Range(rotationSpeedMin, rotationSpeedMax); // Random rotation speed
-        sizeVariation = Random.Range(sizeVariationMin, sizeVariationMax); // Random size variation (Between 85% and 100%)
-        rotationDirection = Random.Range(0, 2) == 0 ? 1 : -1; // Randomly choose clockwise or counter-clockwise
-        transform.localScale *= sizeVariation; // Apply size variation
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        hasSplit = false;
+        transform.rotation = Quaternion.identity;
+        transform.localScale = Vector3.one;
+
+        // Set random rotation and size variation
+        rotationSpeed = Random.Range(rotationSpeedMin, rotationSpeedMax);
+        sizeVariation = Random.Range(sizeVariationMin, sizeVariationMax);
+        rotationDirection = Random.Range(0, 2) == 0 ? 1 : -1;
+        transform.localScale *= sizeVariation;
     }
 
     protected override void Update()
     {
         base.Update();
 
+        // Rotate the asteroid
         currentRotation += rotationDirection * rotationSpeed * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, currentRotation);
     }
@@ -50,29 +52,42 @@ public class Asteroid : Obstacle
     {
         if (!hasSplit && other.CompareTag("Obstacle"))
         {
-            Debug.Log("Asteroid hit another obstacle!");
+            Debug.Log($"Asteroid: OnTriggerEnter2D - {gameObject.name} hit {other.gameObject.name}");
             SplitAsteroid();
             hasSplit = true;
-            Destroy(gameObject);
+
+            // Return this asteroid to the pool instead of destroying it
+            ReturnToSpawner();
         }
     }
 
     void SplitAsteroid()
     {
-        Debug.Log("Splitting asteroid!");
+        Debug.Log($"Asteroid: SplitAsteroid - {gameObject.name}");
         if (asteroidSmallPrefab != null)
         {
-            // Spawn two smaller asteroids at the current position
-            GameObject smallAsteroid1 = Instantiate(asteroidSmallPrefab, transform.position, Quaternion.identity);
-            GameObject smallAsteroid2 = Instantiate(asteroidSmallPrefab, transform.position, Quaternion.identity);
+            // Retrieve small asteroids from the pool
+            GameObject smallAsteroid1 = ObstacleSpawner.Instance.GetPooledObject(asteroidSmallPrefab);
+            GameObject smallAsteroid2 = ObstacleSpawner.Instance.GetPooledObject(asteroidSmallPrefab);
 
-            // Give them random directions
-            Vector3 direction1 = Random.insideUnitCircle.normalized;
-            Vector3 direction2 = Random.insideUnitCircle.normalized;
+            if (smallAsteroid1 == null || smallAsteroid2 == null)
+            {
+                Debug.LogError("Asteroid: Failed to retrieve small asteroids from the pool!");
+                return;
+            }
 
-            smallAsteroid1.GetComponent<Obstacle>().SetDirection(direction1);
-            smallAsteroid2.GetComponent<Obstacle>().SetDirection(direction2);
-            Debug.Log("SplitAsteroid() called");
+            // Initialize the small asteroids
+            smallAsteroid1.transform.position = transform.position;
+            smallAsteroid1.transform.rotation = Quaternion.identity;
+            smallAsteroid1.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
+            smallAsteroid1.GetComponent<Obstacle>().OnObjectSpawn();
+
+            smallAsteroid2.transform.position = transform.position;
+            smallAsteroid2.transform.rotation = Quaternion.identity;
+            smallAsteroid2.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
+            smallAsteroid2.GetComponent<Obstacle>().OnObjectSpawn();
+
+            Debug.Log($"Asteroid: SplitAsteroid - Spawned small asteroids: {smallAsteroid1.name}, {smallAsteroid2.name}");
         }
         else
         {
@@ -80,18 +95,9 @@ public class Asteroid : Obstacle
         }
     }
 
-    public override void OnObjectSpawn()
-    {
-        base.OnObjectSpawn();
-        // Reset properties like position, rotation, etc.
-        hasSplit = false; // Reset the split state
-        transform.rotation = Quaternion.identity; // Reset rotation
-        transform.localScale = Vector3.one; // Reset scale
-    }
-
     public override void OnObjectDespawn()
     {
         base.OnObjectDespawn();
-        // Stop any particle effects or other temporary states
+        Debug.Log($"Asteroid: OnObjectDespawn - {gameObject.name}");
     }
 }
