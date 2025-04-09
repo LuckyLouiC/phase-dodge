@@ -4,6 +4,7 @@ using UnityEditor;
 [CustomEditor(typeof(SatellitePathVisualizer))]
 public class SatellitePathVisualizerEditor : Editor
 {
+    // Custom editor tool to set debug colors for satellite paths
     SerializedProperty satellitePaths;
     SerializedProperty colors;
 

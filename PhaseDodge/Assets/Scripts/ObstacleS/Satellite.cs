@@ -16,34 +16,31 @@ public class Satellite : Obstacle
     {
         base.OnObjectSpawn();
 
+        // Reset the satellite's properties, apply size variation, and set the path
         transform.localScale = Vector3.one;
         transform.localScale *= sizeVariation;
 
         currentWaypointIndex = 0;
 
-        if (path != null && path.waypoints != null && path.waypoints.Length > 0)
-        {
-            transform.position = path.waypoints[0]; // Explicitly set position to the first waypoint
-            Debug.Log($"Satellite: Spawned at first waypoint: {transform.position}");
-            SetDirectionToNextWaypoint();
-        }
-        else
+        if (path == null || path.waypoints == null || path.waypoints.Length < 0)
         {
             Debug.LogError("Satellite: Path is null or invalid. Returning to spawner.");
             ReturnToSpawner();
         }
+
+        transform.position = path.waypoints[0]; // Explicitly set position to the first waypoint
+        SetDirectionToNextWaypoint();
+        //Debug.Log($"Satellite: Spawned at first waypoint: {transform.position}");
     }
 
     protected override void Update()
     {
-        if (path != null && path.waypoints.Length > 1)
-        {
-            MoveAlongPath();
-        }
-        else
+        if (path == null || path.waypoints.Length < 1)
         {
             base.Update(); // Fallback to default behavior
+            Debug.LogWarning($"Satellite: NULL path or waypoint length less then 1: {path}{path.waypoints.Length}");
         }
+        MoveAlongPath();
     }
 
     private void MoveAlongPath()

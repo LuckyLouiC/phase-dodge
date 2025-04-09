@@ -12,7 +12,7 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("Obstacle Prefabs")]
     public GameObject asteroidPrefab;
     public float asteroidSpawnRate = 2.0f;
-    public GameObject smallAsteroidPrefab; // Small asteroid prefab
+    public GameObject smallAsteroidPrefab;
     public GameObject satellitePrefab;
     public float satelliteSpawnRate = 2.5f;
     public GameObject alienShipPrefab;
@@ -21,12 +21,14 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("Satellite Paths")]
     public SatellitePath[] satellitePaths;
 
+    // Coroutines for spawning
     private Coroutine asteroidCoroutine;
     private Coroutine satelliteCoroutine;
     private Coroutine alienShipCoroutine;
 
+    // Object pools for each type of obstacle
     private ObjectPool<GameObject> asteroidPool;
-    private ObjectPool<GameObject> smallAsteroidPool; // Pool for small asteroids
+    private ObjectPool<GameObject> smallAsteroidPool;
     private ObjectPool<GameObject> satellitePool;
     private ObjectPool<GameObject> alienShipPool;
 
@@ -74,19 +76,19 @@ public class ObstacleSpawner : MonoBehaviour
             (obj) =>
             {
                 obj.SetActive(true);
-                Debug.Log($"ObjectPool: Get from pool: {obj.name}");
+                //Debug.Log($"ObjectPool: Get from pool: {obj.name}");
             },
             // On object return to the pool
             (obj) =>
             {
                 obj.SetActive(false);
-                Debug.Log($"ObjectPool: Return to pool: {obj.name}");
+                //Debug.Log($"ObjectPool: Return to pool: {obj.name}");
             },
             // On object destruction
             (obj) =>
             {
                 Destroy(obj);
-                Debug.Log($"ObjectPool: Destroyed {obj.name}.");
+                //Debug.Log($"ObjectPool: Destroyed {obj.name}.");
             },
             true, // Enable collection checks
             poolSize, // Default pool size
@@ -99,10 +101,10 @@ public class ObstacleSpawner : MonoBehaviour
             GameObject obj = Instantiate(prefab); // Explicitly create a new instance
             obj.SetActive(false); // Set the object to inactive
             pool.Release(obj); // Add the new instance to the pool
-            Debug.Log($"ObjectPool: Pre-instantiated object {i + 1}/{poolSize} for {prefab.name}.");
+            //Debug.Log($"ObjectPool: Pre-instantiated object {i + 1}/{poolSize} for {prefab.name}.");
         }
 
-        Debug.Log($"ObjectPool: Pre-instantiated {poolSize} objects for {prefab.name}.");
+        //Debug.Log($"ObjectPool: Pre-instantiated {poolSize} objects for {prefab.name}.");
         return pool;
     }
 
@@ -166,11 +168,28 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void SpawnObstacle(GameObject prefab, ObjectPool<GameObject> pool)
     {
+        // Get spawn position and direction
+        (Vector3 spawnPosition, Vector3 direction) = GetSpawnPositionAndDirection(prefab);
+
+        // Get an obstacle from the pool
+        GameObject obstacle = pool.Get();
+        if (obstacle == null)
+        {
+            Debug.LogError($"ObstacleSpawner: SpawnObstacle - Failed to get object from pool for {prefab.name}. Spawning delayed.");
+            return;
+        }
+
+        // Initialize the obstacle
+        InitializeObstacle(obstacle, prefab, spawnPosition, direction);
+    }
+
+    private (Vector3, Vector3) GetSpawnPositionAndDirection(GameObject prefab)
+    {
         Vector3 spawnPosition = Vector3.zero;
         Vector3 direction = Vector3.zero;
-        int edge = Random.Range(0, 4);
 
         // Determine spawn position and direction based on screen edges
+        int edge = Random.Range(0, 4);
         switch (edge)
         {
             case 0: // Top
@@ -190,10 +209,9 @@ public class ObstacleSpawner : MonoBehaviour
                 direction = Vector3.left;
                 break;
         }
-
         spawnPosition.z = 0;
 
-        // Apply a random angle spread for asteroids to ensure they still move on-screen
+        // Apply a random angle spread for asteroids
         if (prefab == asteroidPrefab)
         {
             float angleSpread = 30f;
@@ -201,32 +219,28 @@ public class ObstacleSpawner : MonoBehaviour
             direction = Quaternion.Euler(0f, 0f, randomAngle) * direction;
         }
 
-        // Get an obstacle from the pool
-        GameObject obstacle = pool.Get();
-        if (obstacle == null)
-        {
-            Debug.LogError($"ObstacleSpawner: SpawnObstacle - Failed to get object from pool for {prefab.name}. Spawning delayed.");
-            // Consider delaying spawning here or increasing pool size
-            return;
-        }
-        obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity); // More efficient
+        return (spawnPosition, direction);
+    }
+
+    private void InitializeObstacle(GameObject obstacle, GameObject prefab, Vector3 spawnPosition, Vector3 direction)
+    {
+        obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
         obstacle.SetActive(true);
 
-        // Initialize the obstacle
+        // Initialize the obstacle component
         Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
         obstacleComponent.SetDirection(direction);
         obstacleComponent.originalPrefab = prefab;
 
-        // Special handling for satellites: Assign the path *before* OnObjectSpawn()
+        // Special handling for satellites
         if (prefab == satellitePrefab && satellitePaths.Length > 0)
         {
             Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
             satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
-            Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
+            //Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
         }
 
-        obstacleComponent.OnObjectSpawn(); // Call OnObjectSpawn *after* path assignment
-
+        obstacleComponent.OnObjectSpawn();
     }
 
     public GameObject GetPooledObject(GameObject prefab)
@@ -237,8 +251,7 @@ public class ObstacleSpawner : MonoBehaviour
         }
         else if (prefab == smallAsteroidPrefab)
         {
-            Debug.Log($"ObstacleSpawner: GetPooledObject - Retrieving small asteroid from pool.");
-            return smallAsteroidPool.Get(); // Retrieve small asteroid from the pool
+            return smallAsteroidPool.Get();
         }
         else if (prefab == satellitePrefab)
         {
@@ -257,45 +270,46 @@ public class ObstacleSpawner : MonoBehaviour
 
     public void DestroyObstacle(GameObject obstacle)
     {
-        if (obstacle != null)
+        if (obstacle == null)
         {
-            Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
-            if (obstacleComponent != null)
-            {
-                obstacleComponent.OnObjectDespawn();
+            Debug.LogError("ObstacleSpawner: DestroyObstacle - Obstacle GameObject is null!");
+        }
+        Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
+        if (obstacleComponent == null)
+        {
+            Debug.LogError($"ObstacleSpawner: DestroyObstacle - Obstacle component is null on {obstacle.name}. Destroying object.");
+            Destroy(obstacle);
+        }
 
-                // Return the obstacle to the appropriate pool
-                if (obstacleComponent.originalPrefab == asteroidPrefab)
-                {
-                    asteroidPool.Release(obstacle);
-                }
-                else if (obstacleComponent.originalPrefab == smallAsteroidPrefab)
-                {
-                    smallAsteroidPool.Release(obstacle); // Return small asteroid to the pool
-                }
-                else if (obstacleComponent.originalPrefab == satellitePrefab)
-                {
-                    satellitePool.Release(obstacle);
-                }
-                else if (obstacleComponent.originalPrefab == alienShipPrefab)
-                {
-                    alienShipPool.Release(obstacle);
-                }
-                else
-                {
-                    Debug.LogWarning($"ObstacleSpawner: DestroyObstacle - Unknown prefab for {obstacle.name}. Destroying object.");
-                    Destroy(obstacle);
-                }
-            }
-            else
-            {
-                Debug.LogError($"ObstacleSpawner: DestroyObstacle - Obstacle component is null on {obstacle.name}. Destroying object.");
-                Destroy(obstacle);
-            }
+        obstacleComponent.OnObjectDespawn();
+
+        // Return the obstacle to the appropriate pool
+        ReleaseObstacleToPool(obstacleComponent, obstacle);
+    }
+
+    void ReleaseObstacleToPool(Obstacle obstacleComponent, GameObject obstacle)
+    {
+
+        if (obstacleComponent.originalPrefab == asteroidPrefab)
+        {
+            asteroidPool.Release(obstacle);
+        }
+        else if (obstacleComponent.originalPrefab == smallAsteroidPrefab)
+        {
+            smallAsteroidPool.Release(obstacle);
+        }
+        else if (obstacleComponent.originalPrefab == satellitePrefab)
+        {
+            satellitePool.Release(obstacle);
+        }
+        else if (obstacleComponent.originalPrefab == alienShipPrefab)
+        {
+            alienShipPool.Release(obstacle);
         }
         else
         {
-            Debug.LogError("ObstacleSpawner: DestroyObstacle - Obstacle GameObject is null!");
+            Debug.LogWarning($"ObstacleSpawner: DestroyObstacle - Unknown prefab for {obstacle.name}. Destroying object.");
+            Destroy(obstacle);
         }
     }
 }

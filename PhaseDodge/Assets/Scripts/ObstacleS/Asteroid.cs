@@ -5,14 +5,16 @@ public class Asteroid : Obstacle
     public GameObject asteroidSmallPrefab;
     private bool hasSplit = false;
 
-    private int rotationDirection = 1;
     private float currentRotation;
-    public float sizeVariation = 1.0f; // Adjustable in editor
-    public float rotationSpeed = 10.0f; // Adjustable in editor
-    public float rotationSpeedMin = 75.0f;
-    public float rotationSpeedMax = 140.0f;
+    private int rotationDirection = 1;
+
+    [Header("Asteroid Properties")]
+    public float sizeVariation = 1.0f;
     public float sizeVariationMin = 0.50f;
     public float sizeVariationMax = 1.0f;
+    public float rotationSpeed = 10.0f;
+    public float rotationSpeedMin = 75.0f;
+    public float rotationSpeedMax = 140.0f;
 
     protected override void Start()
     {
@@ -28,18 +30,12 @@ public class Asteroid : Obstacle
     {
         base.OnObjectSpawn();
         hasSplit = false;
-        transform.rotation = Quaternion.identity;
-        transform.localScale = Vector3.one;
 
-        // Set random rotation and size variation
-        rotationSpeed = Random.Range(rotationSpeedMin, rotationSpeedMax);
-        sizeVariation = Random.Range(sizeVariationMin, sizeVariationMax);
-        rotationDirection = Random.Range(0, 2) == 0 ? 1 : -1;
-        transform.localScale *= sizeVariation;
+        SetRotationAndSize();
 
         // Adjust speed based on size variation (smaller size = higher speed)
         speed = Mathf.Lerp(1.0f, 0.3f, sizeVariation); // Larger sizeVariation results in slower speed
-        Debug.Log($"Asteroid: OnObjectSpawn - Speed set to {speed} based on size variation {sizeVariation}");
+        //Debug.Log($"Asteroid: OnObjectSpawn - Speed set to {speed} based on size variation {sizeVariation}");
     }
 
     protected override void Update()
@@ -49,6 +45,17 @@ public class Asteroid : Obstacle
         // Rotate the asteroid
         currentRotation += rotationDirection * rotationSpeed * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, currentRotation);
+    }
+
+    void SetRotationAndSize()
+    {
+        // Set random rotation and size variation
+        transform.rotation = Quaternion.identity;
+        transform.localScale = Vector3.one;
+        rotationSpeed = Random.Range(rotationSpeedMin, rotationSpeedMax);
+        sizeVariation = Random.Range(sizeVariationMin, sizeVariationMax);
+        rotationDirection = Random.Range(0, 2) == 0 ? 1 : -1;
+        transform.localScale *= sizeVariation;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -66,7 +73,7 @@ public class Asteroid : Obstacle
 
     void SplitAsteroid()
     {
-        Debug.Log($"Asteroid: SplitAsteroid - {gameObject.name}");
+        //Debug.Log($"Asteroid: SplitAsteroid - {gameObject.name}");
         if (asteroidSmallPrefab != null)
         {
             // Retrieve small asteroids from the pool
@@ -79,25 +86,25 @@ public class Asteroid : Obstacle
                 return;
             }
 
-            // Initialize the small asteroids
-            smallAsteroid1.transform.position = transform.position;
-            smallAsteroid1.transform.rotation = Quaternion.identity;
-            smallAsteroid1.GetComponent<Obstacle>().originalPrefab = asteroidSmallPrefab; // Set originalPrefab
-            smallAsteroid1.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
-            smallAsteroid1.GetComponent<Obstacle>().OnObjectSpawn();
-
-            smallAsteroid2.transform.position = transform.position;
-            smallAsteroid2.transform.rotation = Quaternion.identity;
-            smallAsteroid2.GetComponent<Obstacle>().originalPrefab = asteroidSmallPrefab; // Set originalPrefab
-            smallAsteroid2.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
-            smallAsteroid2.GetComponent<Obstacle>().OnObjectSpawn();
-
-            Debug.Log($"Asteroid: SplitAsteroid - Spawned small asteroids: {smallAsteroid1.name}, {smallAsteroid2.name}");
+            InitializeSmallAsteroid(smallAsteroid1);
+            InitializeSmallAsteroid(smallAsteroid2);
+            
+            //Debug.Log($"Asteroid: SplitAsteroid - Spawned small asteroids: {smallAsteroid1.name}, {smallAsteroid2.name}");
         }
         else
         {
             Debug.LogError("AsteroidSmallPrefab is not assigned in the Asteroid script!");
         }
+    }
+
+    void InitializeSmallAsteroid(GameObject smallAsteroid)
+    {
+        // Initialize the small asteroid transform and properties
+        smallAsteroid.transform.position = transform.position;
+        smallAsteroid.transform.rotation = Quaternion.identity;
+        smallAsteroid.GetComponent<Obstacle>().originalPrefab = asteroidSmallPrefab; // Set originalPrefab
+        smallAsteroid.GetComponent<Obstacle>().SetDirection(Random.insideUnitCircle.normalized);
+        smallAsteroid.GetComponent<Obstacle>().OnObjectSpawn();
     }
 
     public override void OnObjectDespawn()

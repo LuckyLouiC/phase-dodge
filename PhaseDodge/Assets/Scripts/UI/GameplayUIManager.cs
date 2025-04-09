@@ -60,10 +60,4 @@ public class GameplayUIManager : MonoBehaviour
     {
         gameOverMenu.SetActive(true);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

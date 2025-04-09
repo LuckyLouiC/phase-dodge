@@ -3,6 +3,8 @@ using UnityEngine;
 public class AlienShip : Obstacle
 {
     private PlayerController player;
+
+    [Header("Alien Ship Properties")]
     public float predictionTime = 0.5f; // How far into the future to predict the player's position
     public float steeringSpeed = 2.0f; // Speed at which the ship adjusts its direction
     public float sizeVariation = 1.0f; // Adjustable in editor

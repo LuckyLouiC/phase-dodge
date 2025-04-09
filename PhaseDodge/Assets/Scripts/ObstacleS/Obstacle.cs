@@ -3,7 +3,7 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
     protected float speed = 0.5f;
-    protected Camera mainCamera;
+    protected Camera mainCamera; // Used for off-screen despawning
     protected Vector3 direction;
     protected bool hasEnteredScreen = false;
     protected PolygonCollider2D obstacleCollider2D;
@@ -19,7 +19,7 @@ public class Obstacle : MonoBehaviour
             gameObject.SetActive(false); // Disable the obstacle if collider is missing
             return;
         }
-        Debug.Log("Obstacle: Start - " + gameObject.name + " (originalPrefab: " + (originalPrefab != null ? originalPrefab.name : "null") + ")");
+        //Debug.Log("Obstacle: Start - " + gameObject.name + " (originalPrefab: " + (originalPrefab != null ? originalPrefab.name : "null") + ")");
     }
 
     protected virtual void Update()
@@ -52,7 +52,8 @@ public class Obstacle : MonoBehaviour
         Vector3 minScreenBounds = mainCamera.WorldToScreenPoint(bounds.min);
         Vector3 maxScreenBounds = mainCamera.WorldToScreenPoint(bounds.max);
 
-        return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height || maxScreenBounds.x < 0 || minScreenBounds.x > Screen.width;
+        return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height 
+            || maxScreenBounds.x < 0 || minScreenBounds.x > Screen.width;
     }
 
     protected bool IsOnScreen()
@@ -76,13 +77,13 @@ public class Obstacle : MonoBehaviour
 
     public virtual void OnObjectSpawn()
     {
-        Debug.Log("Obstacle: OnObjectSpawn - " + gameObject.name);
+        //Debug.Log("Obstacle: OnObjectSpawn - " + gameObject.name);
         hasEnteredScreen = false;
     }
 
     public virtual void OnObjectDespawn()
     {
-        Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
+        //Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
         transform.localScale = Vector3.one; // Reset scale when despawning
     }
 
@@ -96,7 +97,7 @@ public class Obstacle : MonoBehaviour
         }
 
         // Return the object to the appropriate pool in ObstacleSpawner
-        Debug.Log($"Obstacle: ReturnToSpawner - Returning {gameObject.name} to spawner.");
+        //Debug.Log($"Obstacle: ReturnToSpawner - Returning {gameObject.name} to spawner.");
         ObstacleSpawner.Instance.DestroyObstacle(gameObject);
     }
 }
