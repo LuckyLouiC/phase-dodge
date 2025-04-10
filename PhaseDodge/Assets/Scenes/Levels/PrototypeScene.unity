@@ -2088,6 +2088,7 @@ MonoBehaviour:
   satellitePaths:
   - {fileID: 11400000, guid: bf4d833a6987667449a049f4de7e9314, type: 2}
   - {fileID: 11400000, guid: 60f6ab486afaaaf49ab05516a92261f9, type: 2}
+  - {fileID: 11400000, guid: db053d306ba17b749acce66a0c3da1a7, type: 2}
   colors: 000000000200000001000000
 --- !u!1 &1940270626
 GameObject:
