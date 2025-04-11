@@ -2,6 +2,8 @@ using System.Threading;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Pool;
+using System.Collections.Generic;
+
 
 public class ObstacleSpawner : MonoBehaviour
 {
@@ -18,8 +20,8 @@ public class ObstacleSpawner : MonoBehaviour
     public GameObject alienShipPrefab;
     public float alienShipSpawnRate = 10.0f;
 
-    [Header("Satellite Paths")]
-    public SatellitePath[] satellitePaths;
+    [Header("Satellite Path Splines")]
+    public List<OrbitSpline> satellitePaths;
 
     // Coroutines for spawning
     private Coroutine asteroidCoroutine;
@@ -233,11 +235,15 @@ public class ObstacleSpawner : MonoBehaviour
         obstacleComponent.originalPrefab = prefab;
 
         // Special handling for satellites
-        if (prefab == satellitePrefab && satellitePaths.Length > 0)
+        if (prefab == satellitePrefab && satellitePaths.Count > 0)
         {
             Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-            satelliteComponent.path = satellitePaths[Random.Range(0, satellitePaths.Length)];
-            //Debug.Log($"ObstacleSpawner: Assigned path to satellite with first waypoint: {satelliteComponent.path.waypoints[0]}");
+            satelliteComponent.orbits.Clear(); // Clear existing splines
+            foreach (OrbitSpline path in satellitePaths)
+            {
+                satelliteComponent.orbits.Add(path); // Dynamically add spline paths
+            }
+            Debug.Log($"ObstacleSpawner: Assigned path to satellite with paths: {satelliteComponent.orbits.Count}");
         }
 
         obstacleComponent.OnObjectSpawn();

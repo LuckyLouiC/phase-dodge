@@ -10,14 +10,24 @@ public class OrbitSpline : MonoBehaviour
 
     public Vector3 GetPoints(float time)
     {
+        if (anchors == null || handles == null || anchors.Count < 2 || handles.Count < 2)
+        {
+            Debug.LogError("OrbitSpline: Insufficient anchors or handles. Ensure at least two anchors and two handles are assigned.");
+            return Vector3.zero; // Return a default value to prevent further errors
+        }
+
         int numSections = anchors.Count - 1;
         int currentSection = Mathf.FloorToInt(time * numSections);
         float sectionTime = (time * numSections) - currentSection;
+
+        // Clamp currentSection to prevent out-of-bounds access
+        currentSection = Mathf.Clamp(currentSection, 0, numSections - 1);
 
         Vector3 p0 = anchors[currentSection].position;
         Vector3 p1 = handles[currentSection].position;
         Vector3 p2 = handles[currentSection + 1].position;
         Vector3 p3 = anchors[currentSection + 1].position;
+
         return CubicLerp(p0, p1, p2, p3, sectionTime);
     }
 
@@ -31,7 +41,10 @@ public class OrbitSpline : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (anchors == null || handles == null || anchors.Count < 2 || handles.Count < 2)
+        {
+            Debug.LogWarning("OrbitSpline: Insufficient anchors or handles for drawing gizmos. Ensure at least two anchors and two handles are assigned.");
             return;
+        }
 
         Gizmos.color = Color.cyan;
 

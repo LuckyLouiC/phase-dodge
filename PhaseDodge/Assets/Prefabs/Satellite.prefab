@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8967146172469447447}
   - component: {fileID: 9080109455287674860}
   - component: {fileID: 2092308274699648207}
-  - component: {fileID: -2271526205456121234}
+  - component: {fileID: 4207476006060427305}
   m_Layer: 8
   m_Name: Satellite
   m_TagString: Obstacle
@@ -170,7 +170,7 @@ PolygonCollider2D:
       - {x: 0.0012087226, y: -0.2244407}
       - {x: 0.13269228, y: -0.04327297}
   m_UseDelaunayMesh: 0
---- !u!114 &-2271526205456121234
+--- !u!114 &4207476006060427305
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,5 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalPrefab: {fileID: 0}
-  path: {fileID: 0}
-  sizeVariation: 0.5
+  paths:
+  - {fileID: 0}
+  - {fileID: 0}
+  sizeVariation: 0.25

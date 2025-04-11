@@ -1,10 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Satellite : Obstacle
 {
-    public SatellitePath path;
-    private int currentWaypointIndex = 0;
     public float sizeVariation; // Smaller size variation for satellites
+    
+    public List<OrbitSpline> orbits;
+    private int currentSplineIndex = 0; // Track the current spline index
+    private float splineTime;
 
     protected override void Start()
     {
@@ -20,54 +23,37 @@ public class Satellite : Obstacle
         transform.localScale = Vector3.one;
         transform.localScale *= sizeVariation;
 
-        currentWaypointIndex = 0;
-
-        if (path == null || path.waypoints == null || path.waypoints.Length < 0)
+        if (orbits == null || orbits.Count <= 0)
         {
             Debug.LogError("Satellite: Path is null or invalid. Returning to spawner.");
             ReturnToSpawner();
         }
 
-        transform.position = path.waypoints[0]; // Explicitly set position to the first waypoint
-        SetDirectionToNextWaypoint();
-        //Debug.Log($"Satellite: Spawned at first waypoint: {transform.position}");
+        //Debug.Log($"Satellite: Spawned");
     }
 
     protected override void Update()
     {
-        if (path == null || path.waypoints.Length < 1)
+        if (orbits == null || orbits.Count <= 0)
         {
             base.Update(); // Fallback to default behavior
-            Debug.LogWarning($"Satellite: NULL path or waypoint length less then 1: {path}{path.waypoints.Length}");
+            Debug.LogWarning($"Satellite: NULL path or path count less then 1: {orbits}{orbits.Count}");
         }
-        MoveAlongPath();
-    }
 
-    private void MoveAlongPath()
-    {
-        if (currentWaypointIndex >= path.waypoints.Length - 1)
+        OrbitSpline currentOrbit = orbits[currentSplineIndex];
+
+        splineTime += speed * Time.deltaTime;
+
+        if (splineTime >= 1f) // Check if the current spline is completed
         {
-            ReturnToSpawner(); // Return to the pool when the path is complete
-            return;
+            splineTime = 0f; // Reset time for the next spline
+            currentSplineIndex = (currentSplineIndex + 1) % orbits.Count; // Move to the next spline, loop back if at the end
+            currentOrbit = orbits[currentSplineIndex]; // Update the current spline
         }
 
-        Vector3 targetWaypoint = path.waypoints[currentWaypointIndex + 1];
-        transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetWaypoint) < 0.1f)
-        {
-            currentWaypointIndex++;
-            SetDirectionToNextWaypoint();
-        }
-    }
-
-    private void SetDirectionToNextWaypoint()
-    {
-        if (currentWaypointIndex < path.waypoints.Length - 1)
-        {
-            direction = (path.waypoints[currentWaypointIndex + 1] - transform.position).normalized;
-            RotateTowardsDirection();
-        }
+        // TODO: Add rotation to the satellite
+        transform.position = currentOrbit.GetPoints(splineTime);
+        transform.up = currentOrbit.GetPoints(splineTime + 0.01f) - transform.position; // Rotate towards the next point
     }
 
     public override void OnObjectDespawn()

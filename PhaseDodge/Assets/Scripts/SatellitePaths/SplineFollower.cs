@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SplineFollower : MonoBehaviour
 {
-    [SerializeField] private List<OrbitSpline> splines; // Renamed to plural for clarity
+    [SerializeField] public List<OrbitSpline> splines; // Renamed to plural for clarity
     [SerializeField] private float speed = 0.25f; // Speed of movement along the spline
 
     private int currentSplineIndex = 0; // Track the current spline index
