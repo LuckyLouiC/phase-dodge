@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ public class OrbitSpline : MonoBehaviour
 {
     [SerializeField] private List<Transform> anchors;
     [SerializeField] private List<Transform> handles;
+    [SerializeField] private Color gizmoColor;
 
     public Vector3 GetPoints(float time)
     {
@@ -26,6 +28,7 @@ public class OrbitSpline : MonoBehaviour
         Vector3 p2 = handles[currentSection + 1].position;
         Vector3 p3 = anchors[currentSection + 1].position;
 
+        // Allow proper interpolation for the last segment without forcing sectionTime to 1.0
         return CubicLerp(p0, p1, p2, p3, sectionTime);
     }
 
@@ -44,7 +47,7 @@ public class OrbitSpline : MonoBehaviour
             return;
         }
 
-        Gizmos.color = Color.cyan;
+        Gizmos.color = gizmoColor;
 
         const int resolution = 50; // Number of segments to draw
         Vector3 previousPoint = anchors[0].position;
@@ -56,5 +59,12 @@ public class OrbitSpline : MonoBehaviour
             Gizmos.DrawLine(previousPoint, currentPoint);
             previousPoint = currentPoint;
         }
+
+        // Draw a marker at the final anchor to confirm its position
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(anchors[anchors.Count - 1].position, 0.1f);
+
+        // Debug log to verify the final point matches the last anchor
+        Debug.Log($"Final point: {GetPoints(1.0f)}, Last anchor: {anchors[anchors.Count - 1].position}");
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Pool;
 using System.Collections.Generic;
+using UnityEngine.Splines;
 
 
 public class ObstacleSpawner : MonoBehaviour
@@ -21,7 +22,7 @@ public class ObstacleSpawner : MonoBehaviour
     public float alienShipSpawnRate = 10.0f;
 
     [Header("Satellite Path Splines")]
-    public List<OrbitSpline> satellitePaths;
+    public List<SplineContainer> satellitePaths;
 
     // Coroutines for spawning
     private Coroutine asteroidCoroutine;
@@ -121,22 +122,24 @@ public class ObstacleSpawner : MonoBehaviour
         switch (stage)
         {
             case 1:
+                satelliteSpawnRate = 5.0f;
                 asteroidSpawnRate = 2.0f;
+                satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 break;
             case 2:
                 asteroidSpawnRate = 2.0f;
-                satelliteSpawnRate = 4.0f;
+                satelliteSpawnRate = 5.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 break;
             case 3:
                 asteroidSpawnRate = 2.0f;
-                satelliteSpawnRate = 4.0f;
-                alienShipSpawnRate = 10.0f;
+                satelliteSpawnRate = 5.0f;
+               // alienShipSpawnRate = 10.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                alienShipCoroutine = StartCoroutine(SpawnAlienShips());
+                //alienShipCoroutine = StartCoroutine(SpawnAlienShips());
                 break;
         }
     }
@@ -238,12 +241,13 @@ public class ObstacleSpawner : MonoBehaviour
         if (prefab == satellitePrefab && satellitePaths.Count > 0)
         {
             Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-            satelliteComponent.orbits.Clear(); // Clear existing splines
-            foreach (OrbitSpline path in satellitePaths)
-            {
-                satelliteComponent.orbits.Add(path); // Dynamically add spline paths
-            }
-            Debug.Log($"ObstacleSpawner: Assigned path to satellite with paths: {satelliteComponent.orbits.Count}");
+            SplineAnimate satelliteAnimator = satelliteComponent.GetComponent<SplineAnimate>();
+            satelliteComponent.orbit = null; // Clear existing spline orbit
+
+            // Assign a random path from the list of satellite paths
+            SplineContainer randomPath = satellitePaths[Random.Range(0, satellitePaths.Count)];
+            satelliteAnimator.Container = randomPath;
+            Debug.Log($"ObstacleSpawner: Assigned orbit path to {satelliteComponent}: {satelliteAnimator.Container}");
         }
 
         obstacleComponent.OnObjectSpawn();
