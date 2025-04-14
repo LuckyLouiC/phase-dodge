@@ -184,8 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalPrefab: {fileID: 0}
-  orbit: {fileID: 0}
-  sizeVariation: 0.75
+  sizeVariation: 1
 --- !u!114 &5019015218678490597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Target: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_LoopMode: 0
   m_Method: 1
   m_Duration: 1

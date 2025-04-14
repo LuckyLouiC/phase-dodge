@@ -27,11 +27,11 @@ public class GameManager : MonoBehaviour
         gameplayUIManager.UpdateScore(formattedTime);
 
         // Update game stage based on elapsed time
-        if (elapsedTime >= 20 && currentStage == 1) // Stage 2 starts at 20 seconds
+        if (elapsedTime >= 15 && currentStage == 1) // Stage 2 starts at 20 seconds
         {
-            SetGameStage(3);
+            SetGameStage(2);
         }
-        else if (elapsedTime >= 40 && currentStage == 2) // Stage 3 starts at 40 seconds
+        else if (elapsedTime >= 20 && currentStage == 2) // Stage 3 starts at 40 seconds
         {
             SetGameStage(3);
         }

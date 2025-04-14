@@ -136,10 +136,14 @@ public class ObstacleSpawner : MonoBehaviour
             case 3:
                 asteroidSpawnRate = 2.0f;
                 satelliteSpawnRate = 5.0f;
-               // alienShipSpawnRate = 10.0f;
+                alienShipSpawnRate = 10.0f;
                 asteroidCoroutine = StartCoroutine(SpawnAsteroids());
                 satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                //alienShipCoroutine = StartCoroutine(SpawnAlienShips());
+                alienShipCoroutine = StartCoroutine(SpawnAlienShips());
+                break;
+            case 4:
+                satelliteSpawnRate = 2.0f;
+                satelliteCoroutine = StartCoroutine(SpawnSatellites());
                 break;
         }
     }
@@ -229,29 +233,78 @@ public class ObstacleSpawner : MonoBehaviour
 
     private void InitializeObstacle(GameObject obstacle, GameObject prefab, Vector3 spawnPosition, Vector3 direction)
     {
-        obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
         obstacle.SetActive(true);
 
         // Initialize the obstacle component
         Obstacle obstacleComponent = obstacle.GetComponent<Obstacle>();
-        obstacleComponent.SetDirection(direction);
+        if (obstacleComponent == null)
+        {
+            Debug.LogError($"ObstacleSpawner: Obstacle component missing on {obstacle.name}. Releasing object.");
+            // Need to figure out which pool to release to, or just destroy
+            if (prefab == satellitePrefab) satellitePool.Release(obstacle);
+            if (prefab == asteroidPrefab) asteroidPool.Release(obstacle);
+            if (prefab == smallAsteroidPrefab) smallAsteroidPool.Release(obstacle);
+            if (prefab == alienShipPrefab) alienShipPool.Release(obstacle);
+            else Destroy(obstacle); // Fallback: Destroy if pool unknown
+            return;
+        }
         obstacleComponent.originalPrefab = prefab;
 
         // Special handling for satellites
-        if (prefab == satellitePrefab && satellitePaths.Count > 0)
+        if (prefab == satellitePrefab) // Check using the prefab, not the instance tag
         {
+            if (satellitePaths == null || satellitePaths.Count == 0)
+            {
+                Debug.LogError("ObstacleSpawner: satellitePaths list is null or empty! Cannot spawn satellite.");
+                // Release the satellite back to the pool
+                satellitePool.Release(obstacle);
+                return;
+            }
+
             Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-            SplineAnimate satelliteAnimator = satelliteComponent.GetComponent<SplineAnimate>();
-            satelliteComponent.orbit = null; // Clear existing spline orbit
+            SplineAnimate satelliteAnimator = obstacle.GetComponent<SplineAnimate>(); // Get animator directly on the obstacle
+
+            if (satelliteComponent == null || satelliteAnimator == null)
+            {
+                Debug.LogError($"ObstacleSpawner: Satellite or SplineAnimate component missing on {obstacle.name}. Releasing object.");
+                satellitePool.Release(obstacle);
+                return;
+            }
 
             // Assign a random path from the list of satellite paths
             SplineContainer randomPath = satellitePaths[Random.Range(0, satellitePaths.Count)];
+            if (randomPath == null || randomPath.Spline == null || randomPath.Spline.Count == 0)
+            {
+                Debug.LogError($"ObstacleSpawner: Selected randomPath is invalid for {obstacle.name}. Releasing object.");
+                satellitePool.Release(obstacle);
+                return;
+            }
+
             satelliteAnimator.Container = randomPath;
-            Debug.Log($"ObstacleSpawner: Assigned orbit path to {satelliteComponent}: {satelliteAnimator.Container}");
+            Debug.Log($"ObstacleSpawner: Assigned orbit path {randomPath.name} to {obstacle.name}");
+
+            // Get the position of the first knot (start of the spline) in world space.
+            // This assumes the SplineContainer's GameObject transform is at (0,0,0) or its position
+            // should be factored in. Using TransformPoint handles the SplineContainer's position/rotation/scale.
+            Vector3 splineStartPosition = randomPath.transform.TransformPoint(randomPath.Spline.ToArray()[0].Position);
+            splineStartPosition.z = 0; // Ensure Z is 0 for 2D gameplay
+            obstacle.transform.position = splineStartPosition;
+            Debug.Log($"ObstacleSpawner: Set {obstacle.name} initial position to spline start: {splineStartPosition}");
+
+        }
+        else // Handling for non-satellite obstacles
+        {
+            obstacleComponent.SetDirection(direction);
+            // Set position AFTER setting direction/rotation if needed
+            obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
+            // If non-satellites need rotation based on direction:
+            // obstacleComponent.RotateTowardsDirection(); // Call this if needed
         }
 
+        // Call OnObjectSpawn AFTER position and path/direction are set
         obstacleComponent.OnObjectSpawn();
     }
+
 
     public GameObject GetPooledObject(GameObject prefab)
     {

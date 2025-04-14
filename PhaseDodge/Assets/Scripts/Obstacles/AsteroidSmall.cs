@@ -11,6 +11,13 @@ public class AsteroidSmall : Obstacle
         speed = 1.5f; // Faster than the regular asteroid
     }
 
+    protected override void Update()
+    {
+        base.Update();
+        // Move the small asteroid
+        MoveObstacle();
+    }
+
     public override void OnObjectSpawn()
     {
         base.OnObjectSpawn();

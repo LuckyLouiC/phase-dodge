@@ -5,7 +5,6 @@ using UnityEngine.Splines;
 public class Satellite : Obstacle
 {
     private SplineAnimate splineAnimator;
-    public SplineContainer orbit;
     public float sizeVariation; // Smaller size variation for satellites
 
 
@@ -30,9 +29,7 @@ public class Satellite : Obstacle
     public override void OnObjectSpawn()
     {
         base.OnObjectSpawn();
-
-        Debug.Log($"Satellite: SplineContainer (orbit): {orbit}");
-        Debug.Log($"Satellite: SplineAnimate (splineAnimator): {splineAnimator}");
+        Debug.Log($"Satellite: OnObjectSpawn - {gameObject.name}: hasEnteredScreen: {hasEnteredScreen}");
 
         // Reset the satellite's properties, apply size variation, and set the path
         transform.localScale = Vector3.one;
@@ -43,21 +40,25 @@ public class Satellite : Obstacle
             Debug.LogError("Satellite: SplineAnimator is null. Returning to spawner.");
             ReturnToSpawner();
         }
-        splineAnimator.Play();
-        Debug.Log($"Satellite: SplineAnimator: {splineAnimator} - Playing animation");
-
-        Debug.Log($"Satellite: Spawned");
+        splineAnimator.Restart(true);
+        Debug.Log($"Satellite: SplineAnimator: {splineAnimator} - Restarting animation");
     }
 
     protected override void Update()
     {
         if (splineAnimator == null)
         {
-            base.Update(); // Fallback to default behavior
             Debug.LogWarning($"Satellite: NULL SplineAnimator: {splineAnimator}");
         }
+        Debug.LogWarning($"{gameObject.name} - hasEnteredScreen: {hasEnteredScreen}, IsFullyOffScreen: {IsFullyOffScreen()}, location: {transform.position}");
+        Debug.Log($"Satellite: SplineAnimator.IsPlaying: {splineAnimator.IsPlaying}, SplineAnimator.MaxSpeed: {splineAnimator.MaxSpeed}");
+        splineAnimator.Completed += OnSplineAnimationCompleted;
+    }
 
-        // Move the satellite along the path
+    private void OnSplineAnimationCompleted()
+    {
+        Debug.Log($"Satellite: Spline animation completed for {gameObject.name}");
+        ReturnToSpawner();
     }
 
     public override void OnObjectDespawn()

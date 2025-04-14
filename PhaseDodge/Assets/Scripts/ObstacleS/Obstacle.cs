@@ -24,18 +24,22 @@ public class Obstacle : MonoBehaviour
 
     protected virtual void Update()
     {
-        // Move the obstacle in the specified direction
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
-
         // Check if the obstacle has left the screen
         if (hasEnteredScreen && IsFullyOffScreen())
         {
+            Debug.Log($"Obstacle: Update - {gameObject.name} hasEnteredscreen: {hasEnteredScreen}, IsFullyOffScreen: {IsFullyOffScreen()}");
             ReturnToSpawner();
         }
         else if (!hasEnteredScreen && IsOnScreen())
         {
             hasEnteredScreen = true;
         }
+    }
+
+    public void MoveObstacle()
+    {   
+        // Move the obstacle in the specified direction
+        transform.Translate(direction * speed * Time.deltaTime, Space.World);
     }
 
     public void SetDirection(Vector3 direction)
@@ -83,7 +87,7 @@ public class Obstacle : MonoBehaviour
 
     public virtual void OnObjectDespawn()
     {
-        //Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
+        Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
         transform.localScale = Vector3.one; // Reset scale when despawning
     }
 

@@ -203,8 +203,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalPrefab: {fileID: 0}
   asteroidSmallPrefab: {fileID: 4082685579555734100, guid: c18aade764e66124cb7e0e7f85ab3e27, type: 3}
+  sizeVariation: 1
+  sizeVariationMin: 0.5
+  sizeVariationMax: 2.5
   rotationSpeed: 10
   rotationSpeedMin: 75
   rotationSpeedMax: 140
-  sizeVariationMin: 0.5
-  sizeVariationMax: 1

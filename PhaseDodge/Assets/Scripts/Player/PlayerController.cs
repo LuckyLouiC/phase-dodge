@@ -19,19 +19,33 @@ public class PlayerController : MonoBehaviour
     private Vector3 currentVelocity = Vector3.zero;
     private Vector3 smoothDampVelocity = Vector3.zero;
 
+    private InputAction moveShip;
+
     void Start()
     {
         mainCamera = Camera.main;
         targetPosition = transform.position;
         gameManager = FindAnyObjectByType<GameManager>();
         targetRotation = transform.rotation;
+
+        // Update InputAction to support both touchscreen and mouse input
+        moveShip = new InputAction("MoveShip");
+        moveShip.AddBinding("<Touchscreen>/primaryTouch/position");
+        moveShip.AddBinding("<Mouse>/position");
+        moveShip.Enable();
     }
 
     void Update()
     {
+        // Handle touch input
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
         {
-            (targetPosition, targetRotation) = GetTargetDirectionAndRotation();
+            (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Touchscreen.current.primaryTouch.position.ReadValue());
+        }
+        // Handle mouse input
+        else if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+        {
+            (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Mouse.current.position.ReadValue());
         }
 
         SetDirectionAndRotation();
@@ -39,11 +53,11 @@ public class PlayerController : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
     }
 
-    private (Vector3, Quaternion) GetTargetDirectionAndRotation()
+    // Update method to accept input position from both touch and mouse
+    private (Vector3, Quaternion) GetTargetDirectionAndRotation(Vector2 inputPosition)
     {
-        Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
-        Vector3 worldTouchPosition = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, transform.position.z - mainCamera.transform.position.z));
-        targetPosition = worldTouchPosition;
+        Vector3 worldInputPosition = mainCamera.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, transform.position.z - mainCamera.transform.position.z));
+        targetPosition = worldInputPosition;
 
         Vector3 direction = targetPosition - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

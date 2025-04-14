@@ -190,4 +190,4 @@ MonoBehaviour:
   originalPrefab: {fileID: 0}
   predictionTime: 1.5
   steeringSpeed: 2
-  sizeVariation: 0.5
+  sizeVariation: 1

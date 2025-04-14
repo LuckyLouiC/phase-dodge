@@ -42,6 +42,8 @@ public class Asteroid : Obstacle
     {
         base.Update();
 
+        // Move the asteroid
+        MoveObstacle();
         // Rotate the asteroid
         currentRotation += rotationDirection * rotationSpeed * Time.deltaTime;
         transform.rotation = Quaternion.Euler(0, 0, currentRotation);

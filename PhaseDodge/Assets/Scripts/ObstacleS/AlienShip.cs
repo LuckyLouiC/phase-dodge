@@ -37,8 +37,8 @@ public class AlienShip : Obstacle
         else
         {
             Debug.LogWarning("AlienShip: PlayerController is null. Falling back to default behavior.");
-            base.Update(); // Fallback to default behavior
         }
+        base.Update(); // Fallback to default behavior
     }
 
     private void InterceptPlayer()
