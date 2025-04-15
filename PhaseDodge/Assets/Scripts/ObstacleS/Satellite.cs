@@ -7,7 +7,6 @@ public class Satellite : Obstacle
     private SplineAnimate splineAnimator;
     public float sizeVariation; // Smaller size variation for satellites
 
-
     private void Awake()
     {
         // Initialize the spline animator
@@ -18,8 +17,8 @@ public class Satellite : Obstacle
             gameObject.SetActive(false); // Disable the satellite if the component is missing
             return;
         }
-        Debug.Log($"Satellite: SplineAnimate component found: {splineAnimator}");
     }
+
     protected override void Start()
     {
         base.Start();
@@ -29,41 +28,42 @@ public class Satellite : Obstacle
     public override void OnObjectSpawn()
     {
         base.OnObjectSpawn();
-        Debug.Log($"Satellite: OnObjectSpawn - {gameObject.name}: hasEnteredScreen: {hasEnteredScreen}");
+        ResetTransform();
+        SetupSplineAnimator();
+    }
 
-        // Reset the satellite's properties, apply size variation, and set the path
+    private void ResetTransform()
+    {
+        // Reset the satellite's transform properties
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
-        transform.localScale *= sizeVariation;
+    }
 
+    private void SetupSplineAnimator()
+    {
         if (splineAnimator == null)
         {
             Debug.LogError("Satellite: SplineAnimator is null. Returning to spawner.");
             ReturnToSpawner();
         }
         splineAnimator.Restart(true);
-        Debug.Log($"Satellite: SplineAnimator: {splineAnimator} - Restarting animation");
-    }
-
-    protected override void Update()
-    {
-        if (splineAnimator == null)
-        {
-            Debug.LogWarning($"Satellite: NULL SplineAnimator: {splineAnimator}");
-        }
-        Debug.LogWarning($"{gameObject.name} - hasEnteredScreen: {hasEnteredScreen}, IsFullyOffScreen: {IsFullyOffScreen()}, location: {transform.position}");
-        Debug.Log($"Satellite: SplineAnimator.IsPlaying: {splineAnimator.IsPlaying}, SplineAnimator.MaxSpeed: {splineAnimator.MaxSpeed}");
+        // Subscribe to the Completed event in OnObjectSpawn - unsubscribe in OnObjectDespawn
         splineAnimator.Completed += OnSplineAnimationCompleted;
     }
 
     private void OnSplineAnimationCompleted()
     {
-        Debug.Log($"Satellite: Spline animation completed for {gameObject.name}");
         ReturnToSpawner();
     }
 
     public override void OnObjectDespawn()
     {
         base.OnObjectDespawn();
-        // Add any cleanup logic specific to satellites here
+        // Unsubscribe from SplineAnimate's Completed event to prevent memory leaks
+        if (splineAnimator != null)
+        {
+            splineAnimator.Completed -= OnSplineAnimationCompleted;
+        }
     }
 }

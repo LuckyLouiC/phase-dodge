@@ -28,6 +28,11 @@ public class PlayerController : MonoBehaviour
         gameManager = FindAnyObjectByType<GameManager>();
         targetRotation = transform.rotation;
 
+        SetupInputActions();
+    }
+
+    private void SetupInputActions()
+    {
         // Update InputAction to support both touchscreen and mouse input
         moveShip = new InputAction("MoveShip");
         moveShip.AddBinding("<Touchscreen>/primaryTouch/position");
@@ -47,7 +52,6 @@ public class PlayerController : MonoBehaviour
         {
             (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Mouse.current.position.ReadValue());
         }
-
         SetDirectionAndRotation();
         ClampPositionWithinCameraBounds();
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
@@ -71,10 +75,9 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         
         float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
-        if (distanceToTarget < stoppingSpeed) // Only move if not close enough
+        if (distanceToTarget < stoppingSpeed) // Only move if not close enough to target location
         {
-            currentVelocity = Vector3.SmoothDamp(currentVelocity, Vector3.zero, ref smoothDampVelocity, acceleration * Time.deltaTime);
-            transform.position += currentVelocity * Time.deltaTime;
+            MovePlayer(Vector3.zero);
         }
         else
         {
@@ -84,12 +87,16 @@ public class PlayerController : MonoBehaviour
                 // Decelerate smoothly
                 targetSpeed = Mathf.Lerp(0, maxSpeed, distanceToTarget / decelerationDistance);
             }
-
-            Vector3 desiredVelocity = (targetPosition - transform.position).normalized * targetSpeed;
-            currentVelocity = Vector3.SmoothDamp(currentVelocity, desiredVelocity, ref smoothDampVelocity, acceleration * Time.deltaTime);
-            transform.position += currentVelocity * Time.deltaTime;
+            Vector3 slowdownVelocity = (targetPosition - transform.position).normalized * targetSpeed;
+            MovePlayer(slowdownVelocity);
         }
     }
+
+    private void MovePlayer(Vector3 targetVelocity)
+    {
+        currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref smoothDampVelocity, acceleration * Time.deltaTime);
+        transform.position += currentVelocity * Time.deltaTime;
+    }    
 
     private void ClampPositionWithinCameraBounds()
     {

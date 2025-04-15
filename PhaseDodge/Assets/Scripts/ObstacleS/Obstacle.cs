@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    protected float speed = 0.5f;
-    protected Camera mainCamera; // Used for off-screen despawning
-    protected Vector3 direction;
-    protected bool hasEnteredScreen = false;
-    protected PolygonCollider2D obstacleCollider2D;
     [HideInInspector] public GameObject originalPrefab; // Store the original prefab (assigned by ObstacleSpawner)
+
+    protected Camera mainCamera; // Used for off-screen despawning
+    protected PolygonCollider2D obstacleCollider2D;
+    protected Vector3 direction;
+    protected float speed = 0.5f;
+    protected bool hasEnteredScreen = false;
 
     protected virtual void Start()
     {
@@ -19,7 +20,6 @@ public class Obstacle : MonoBehaviour
             gameObject.SetActive(false); // Disable the obstacle if collider is missing
             return;
         }
-        //Debug.Log("Obstacle: Start - " + gameObject.name + " (originalPrefab: " + (originalPrefab != null ? originalPrefab.name : "null") + ")");
     }
 
     protected virtual void Update()
@@ -27,7 +27,6 @@ public class Obstacle : MonoBehaviour
         // Check if the obstacle has left the screen
         if (hasEnteredScreen && IsFullyOffScreen())
         {
-            Debug.Log($"Obstacle: Update - {gameObject.name} hasEnteredscreen: {hasEnteredScreen}, IsFullyOffScreen: {IsFullyOffScreen()}");
             ReturnToSpawner();
         }
         else if (!hasEnteredScreen && IsOnScreen())
@@ -52,11 +51,9 @@ public class Obstacle : MonoBehaviour
     {
         if (obstacleCollider2D == null) return false;
 
-        Bounds bounds = obstacleCollider2D.bounds;
-        Vector3 minScreenBounds = mainCamera.WorldToScreenPoint(bounds.min);
-        Vector3 maxScreenBounds = mainCamera.WorldToScreenPoint(bounds.max);
+        var (minScreenBounds, maxScreenBounds) = GetScreenBoundsInViewport();
 
-        return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height 
+        return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height
             || maxScreenBounds.x < 0 || minScreenBounds.x > Screen.width;
     }
 
@@ -64,13 +61,22 @@ public class Obstacle : MonoBehaviour
     {
         if (obstacleCollider2D == null) return false;
 
-        Bounds bounds = obstacleCollider2D.bounds;
-        Vector3 minScreenPoint = mainCamera.WorldToViewportPoint(bounds.min);
-        Vector3 maxScreenPoint = mainCamera.WorldToViewportPoint(bounds.max);
+        var (minScreenPoint, maxScreenPoint) = GetScreenBoundsInViewport();
 
         // Check if the bounds rectangle overlaps with the viewport (0,0 to 1,1)
         return maxScreenPoint.x > 0 && minScreenPoint.x < 1 && maxScreenPoint.y > 0 && minScreenPoint.y < 1;
     }
+
+    private (Vector3, Vector3) GetScreenBoundsInViewport()
+    {
+        if (obstacleCollider2D == null) return (Vector3.zero, Vector3.zero);
+
+        Bounds bounds = obstacleCollider2D.bounds;
+        Vector3 minScreenPoint = mainCamera.WorldToViewportPoint(bounds.min);
+        Vector3 maxScreenPoint = mainCamera.WorldToViewportPoint(bounds.max);
+        return (minScreenPoint, maxScreenPoint);
+    }
+
 
     protected void RotateTowardsDirection()
     {
@@ -81,14 +87,12 @@ public class Obstacle : MonoBehaviour
 
     public virtual void OnObjectSpawn()
     {
-        //Debug.Log("Obstacle: OnObjectSpawn - " + gameObject.name);
         hasEnteredScreen = false;
     }
 
     public virtual void OnObjectDespawn()
     {
-        Debug.Log("Obstacle: OnObjectDespawn - " + gameObject.name);
-        transform.localScale = Vector3.one; // Reset scale when despawning
+        transform.localScale = Vector3.one;
     }
 
     protected virtual void ReturnToSpawner()
@@ -99,9 +103,7 @@ public class Obstacle : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         // Return the object to the appropriate pool in ObstacleSpawner
-        //Debug.Log($"Obstacle: ReturnToSpawner - Returning {gameObject.name} to spawner.");
         ObstacleSpawner.Instance.DestroyObstacle(gameObject);
     }
 }

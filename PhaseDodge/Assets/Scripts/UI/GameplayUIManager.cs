@@ -17,12 +17,17 @@ public class GameplayUIManager : MonoBehaviour
 
     void Start()
     {
+        AddButtonListeners();
+    }
+
+    private void AddButtonListeners()
+    {
         pauseButton.onClick.AddListener(PauseGame);
-        retryButton.onClick.AddListener(RetryGame);
         resumeButton.onClick.AddListener(ResumeGame);
-        foreach (Button quitButton in quitButtons)
+        retryButton.onClick.AddListener(RetryGame);
+        foreach (Button button in quitButtons)
         {
-            quitButton.onClick.AddListener(ReturnToMainMenu);
+            button.onClick.AddListener(ReturnToMainMenu);
         }
         pauseMenu.SetActive(false);
     }

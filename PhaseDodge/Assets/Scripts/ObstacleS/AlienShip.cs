@@ -20,14 +20,6 @@ public class AlienShip : Obstacle
         }
     }
 
-    public override void OnObjectSpawn()
-    {
-        base.OnObjectSpawn();
-        // Reset any specific properties for alien ships here
-        transform.localScale = Vector3.one;
-        transform.localScale *= sizeVariation; // Apply size variation
-    }
-
     protected override void Update()
     {
         if (player != null)
@@ -41,19 +33,45 @@ public class AlienShip : Obstacle
         base.Update(); // Fallback to default behavior
     }
 
+    public override void OnObjectSpawn()
+    {
+        base.OnObjectSpawn();
+        // Reset any specific properties for alien ships here
+        ResetTransform();
+    }
+
+    private void ResetTransform()
+    {
+        transform.localScale = Vector3.one;
+        transform.localScale *= sizeVariation;
+    }
+
     private void InterceptPlayer()
     {
+        Vector3 predictedPosition = GetPlayerPredictedPosition();
+        SteerTowardsTarget(predictedPosition);
+        RotateTowardsDirection();
+        MoveObstacle();
+    }
+
+    private Vector3 GetPlayerPredictedPosition()
+    {
+        if (player == null)
+        {
+            Debug.LogError("AlienShip: PlayerController is null. Cannot get player position.");
+            return Vector3.zero; // Return a default Vector3 value to fix CS0126  
+        }
         Vector3 playerPosition = player.transform.position;
         Vector3 playerVelocity = (playerPosition - transform.position).normalized * speed;
-        Vector3 predictedPosition = playerPosition + playerVelocity * predictionTime;
+        return playerPosition + playerVelocity * predictionTime;
+    }
 
+    private void SteerTowardsTarget(Vector3 targetPosition)
+    {
         // Gradually adjust the direction using steeringSpeed
-        Vector3 targetDirection = (predictedPosition - transform.position).normalized;
+        Vector3 targetDirection = (targetPosition - transform.position).normalized;
         float maxSteerAngle = 5.0f * Time.deltaTime; // Maximum angle to steer in one frame
         direction = Vector3.RotateTowards(direction, targetDirection, maxSteerAngle, 0.0f);
-
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
-        RotateTowardsDirection();
     }
 
     public override void OnObjectDespawn()

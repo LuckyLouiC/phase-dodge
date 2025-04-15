@@ -52,9 +52,14 @@ public class ObstacleSpawner : MonoBehaviour
             return;
         }
 
-        // Initialize object pools for each obstacle type
+        // Initialize object pools
+        InitializeObjectPools();
+    }
+
+    private void InitializeObjectPools()
+    {
         asteroidPool = CreateObjectPool(asteroidPrefab);
-        smallAsteroidPool = CreateObjectPool(smallAsteroidPrefab); // Initialize small asteroid pool
+        smallAsteroidPool = CreateObjectPool(smallAsteroidPrefab);
         satellitePool = CreateObjectPool(satellitePrefab);
         alienShipPool = CreateObjectPool(alienShipPrefab);
     }
@@ -62,7 +67,27 @@ public class ObstacleSpawner : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+        PreWarmPools(); // Pre-warm object pools
         SetStage(1); // Start with stage 1
+    }
+
+    private void PreWarmPools()
+    {
+        // Pre-warm all pools to avoid runtime instantiation overhead
+        PreWarmPool(asteroidPool, asteroidPrefab);
+        PreWarmPool(smallAsteroidPool, smallAsteroidPrefab);
+        PreWarmPool(satellitePool, satellitePrefab);
+        PreWarmPool(alienShipPool, alienShipPrefab);
+    }
+
+    private void PreWarmPool(ObjectPool<GameObject> pool, GameObject prefab)
+    {
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(prefab);
+            obj.SetActive(false);
+            pool.Release(obj);
+        }
     }
 
     private ObjectPool<GameObject> CreateObjectPool(GameObject prefab)
@@ -98,80 +123,37 @@ public class ObstacleSpawner : MonoBehaviour
             maxPoolSize // Maximum pool size
         );
 
-        // Pre-instantiate objects up to the initial pool size
-        for (int i = 0; i < poolSize; i++)
-        {
-            GameObject obj = Instantiate(prefab); // Explicitly create a new instance
-            obj.SetActive(false); // Set the object to inactive
-            pool.Release(obj); // Add the new instance to the pool
-            //Debug.Log($"ObjectPool: Pre-instantiated object {i + 1}/{poolSize} for {prefab.name}.");
-        }
-
-        //Debug.Log($"ObjectPool: Pre-instantiated {poolSize} objects for {prefab.name}.");
         return pool;
     }
 
     public void SetStage(int stage)
     {
-        // Stop any existing coroutines
-        if (asteroidCoroutine != null) StopCoroutine(asteroidCoroutine);
-        if (satelliteCoroutine != null) StopCoroutine(satelliteCoroutine);
-        if (alienShipCoroutine != null) StopCoroutine(alienShipCoroutine);
+        // Stop all existing coroutines
+        StopAllCoroutines();
 
-        // Start coroutines based on the stage
-        switch (stage)
+        // Define spawn rates and coroutines for each stage
+        var stageConfig = new Dictionary<int, (float asteroidRate, float satelliteRate, float alienShipRate)>
         {
-            case 1:
-                satelliteSpawnRate = 5.0f;
-                asteroidSpawnRate = 2.0f;
-                satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                asteroidCoroutine = StartCoroutine(SpawnAsteroids());
-                break;
-            case 2:
-                asteroidSpawnRate = 2.0f;
-                satelliteSpawnRate = 5.0f;
-                asteroidCoroutine = StartCoroutine(SpawnAsteroids());
-                satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                break;
-            case 3:
-                asteroidSpawnRate = 2.0f;
-                satelliteSpawnRate = 5.0f;
-                alienShipSpawnRate = 10.0f;
-                asteroidCoroutine = StartCoroutine(SpawnAsteroids());
-                satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                alienShipCoroutine = StartCoroutine(SpawnAlienShips());
-                break;
-            case 4:
-                satelliteSpawnRate = 2.0f;
-                satelliteCoroutine = StartCoroutine(SpawnSatellites());
-                break;
+            // Stage | Asteroid Rate | Satellite Rate | Alien Ship Rate
+            { 1,     (2.0f,             0f,             0f) },
+            { 2,     (2.0f,             5.0f,           0f) },
+            { 3,     (2.0f,             5.0f,           10.0f) },
+            { 4,     (0f,               2.0f,           0f) }
+        };
+
+        if (stageConfig.TryGetValue(stage, out var config))
+        {
+            asteroidSpawnRate = config.asteroidRate;
+            satelliteSpawnRate = config.satelliteRate;
+            alienShipSpawnRate = config.alienShipRate;
+
+            if (asteroidSpawnRate > 0) asteroidCoroutine = StartCoroutine(SpawnAsteroids());
+            if (satelliteSpawnRate > 0) satelliteCoroutine = StartCoroutine(SpawnSatellites());
+            if (alienShipSpawnRate > 0) alienShipCoroutine = StartCoroutine(SpawnAlienShips());
         }
-    }
-
-    private IEnumerator SpawnAsteroids()
-    {
-        while (true)
+        else
         {
-            yield return new WaitForSeconds(asteroidSpawnRate);
-            SpawnObstacle(asteroidPrefab, asteroidPool);
-        }
-    }
-
-    private IEnumerator SpawnSatellites()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(satelliteSpawnRate);
-            SpawnObstacle(satellitePrefab, satellitePool);
-        }
-    }
-
-    private IEnumerator SpawnAlienShips()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(alienShipSpawnRate);
-            SpawnObstacle(alienShipPrefab, alienShipPool);
+            Debug.LogError($"ObstacleSpawner: Invalid stage {stage}.");
         }
     }
 
@@ -240,71 +222,65 @@ public class ObstacleSpawner : MonoBehaviour
         if (obstacleComponent == null)
         {
             Debug.LogError($"ObstacleSpawner: Obstacle component missing on {obstacle.name}. Releasing object.");
-            // Need to figure out which pool to release to, or just destroy
-            if (prefab == satellitePrefab) satellitePool.Release(obstacle);
-            if (prefab == asteroidPrefab) asteroidPool.Release(obstacle);
-            if (prefab == smallAsteroidPrefab) smallAsteroidPool.Release(obstacle);
-            if (prefab == alienShipPrefab) alienShipPool.Release(obstacle);
-            else Destroy(obstacle); // Fallback: Destroy if pool unknown
+            ReleaseToPool(prefab, obstacle);
             return;
         }
         obstacleComponent.originalPrefab = prefab;
 
-        // Special handling for satellites
-        if (prefab == satellitePrefab) // Check using the prefab, not the instance tag
+        if (prefab == satellitePrefab)
         {
-            if (satellitePaths == null || satellitePaths.Count == 0)
-            {
-                Debug.LogError("ObstacleSpawner: satellitePaths list is null or empty! Cannot spawn satellite.");
-                // Release the satellite back to the pool
-                satellitePool.Release(obstacle);
-                return;
-            }
-
-            Satellite satelliteComponent = obstacle.GetComponent<Satellite>();
-            SplineAnimate satelliteAnimator = obstacle.GetComponent<SplineAnimate>(); // Get animator directly on the obstacle
-
-            if (satelliteComponent == null || satelliteAnimator == null)
-            {
-                Debug.LogError($"ObstacleSpawner: Satellite or SplineAnimate component missing on {obstacle.name}. Releasing object.");
-                satellitePool.Release(obstacle);
-                return;
-            }
-
-            // Assign a random path from the list of satellite paths
-            SplineContainer randomPath = satellitePaths[Random.Range(0, satellitePaths.Count)];
-            if (randomPath == null || randomPath.Spline == null || randomPath.Spline.Count == 0)
-            {
-                Debug.LogError($"ObstacleSpawner: Selected randomPath is invalid for {obstacle.name}. Releasing object.");
-                satellitePool.Release(obstacle);
-                return;
-            }
-
-            satelliteAnimator.Container = randomPath;
-            Debug.Log($"ObstacleSpawner: Assigned orbit path {randomPath.name} to {obstacle.name}");
-
-            // Get the position of the first knot (start of the spline) in world space.
-            // This assumes the SplineContainer's GameObject transform is at (0,0,0) or its position
-            // should be factored in. Using TransformPoint handles the SplineContainer's position/rotation/scale.
-            Vector3 splineStartPosition = randomPath.transform.TransformPoint(randomPath.Spline.ToArray()[0].Position);
-            splineStartPosition.z = 0; // Ensure Z is 0 for 2D gameplay
-            obstacle.transform.position = splineStartPosition;
-            Debug.Log($"ObstacleSpawner: Set {obstacle.name} initial position to spline start: {splineStartPosition}");
-
+            InitializeSatellite(obstacle);
         }
-        else // Handling for non-satellite obstacles
+        else
         {
             obstacleComponent.SetDirection(direction);
-            // Set position AFTER setting direction/rotation if needed
             obstacle.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
-            // If non-satellites need rotation based on direction:
-            // obstacleComponent.RotateTowardsDirection(); // Call this if needed
         }
 
-        // Call OnObjectSpawn AFTER position and path/direction are set
         obstacleComponent.OnObjectSpawn();
     }
 
+    private void InitializeSatellite(GameObject satellite)
+    {
+        if (satellitePaths == null || satellitePaths.Count == 0)
+        {
+            Debug.LogError("ObstacleSpawner: satellitePaths list is null or empty! Cannot spawn satellite.");
+            satellitePool.Release(satellite);
+            return;
+        }
+
+        Satellite satelliteComponent = satellite.GetComponent<Satellite>();
+        SplineAnimate satelliteAnimator = satellite.GetComponent<SplineAnimate>();
+
+        if (satelliteComponent == null || satelliteAnimator == null)
+        {
+            Debug.LogError($"ObstacleSpawner: Satellite or SplineAnimate component missing on {satellite.name}. Releasing object.");
+            satellitePool.Release(satellite);
+            return;
+        }
+
+        SplineContainer randomPath = satellitePaths[Random.Range(0, satellitePaths.Count)];
+        if (randomPath == null || randomPath.Spline == null || randomPath.Spline.Count == 0)
+        {
+            Debug.LogError($"ObstacleSpawner: Selected randomPath is invalid for {satellite.name}. Releasing object.");
+            satellitePool.Release(satellite);
+            return;
+        }
+
+        satelliteAnimator.Container = randomPath;
+        Vector3 splineStartPosition = randomPath.transform.TransformPoint(randomPath.Spline.ToArray()[0].Position);
+        splineStartPosition.z = 0;
+        satellite.transform.position = splineStartPosition;
+    }
+
+    private void ReleaseToPool(GameObject prefab, GameObject obstacle)
+    {
+        if (prefab == asteroidPrefab) asteroidPool.Release(obstacle);
+        else if (prefab == smallAsteroidPrefab) smallAsteroidPool.Release(obstacle);
+        else if (prefab == satellitePrefab) satellitePool.Release(obstacle);
+        else if (prefab == alienShipPrefab) alienShipPool.Release(obstacle);
+        else Destroy(obstacle);
+    }
 
     public GameObject GetPooledObject(GameObject prefab)
     {
@@ -373,6 +349,32 @@ public class ObstacleSpawner : MonoBehaviour
         {
             Debug.LogWarning($"ObstacleSpawner: DestroyObstacle - Unknown prefab for {obstacle.name}. Destroying object.");
             Destroy(obstacle);
+        }
+    }
+    private IEnumerator SpawnAsteroids()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(asteroidSpawnRate);
+            SpawnObstacle(asteroidPrefab, asteroidPool);
+        }
+    }
+
+    private IEnumerator SpawnSatellites()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(satelliteSpawnRate);
+            SpawnObstacle(satellitePrefab, satellitePool);
+        }
+    }
+
+    private IEnumerator SpawnAlienShips()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(alienShipSpawnRate);
+            SpawnObstacle(alienShipPrefab, alienShipPool);
         }
     }
 }
