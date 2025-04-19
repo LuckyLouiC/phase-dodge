@@ -103,10 +103,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 2
-  maxSpeed: 5
-  rotationSpeed: 10
-  decelerationDistance: 0.5
-  stoppingSpeed: 0.1
+  maxSpeed: 4
+  rotationSpeed: 11
+  decelerationDistance: 2.5
+  stoppingSpeed: 0.5
 --- !u!50 &4151406793638510454
 Rigidbody2D:
   serializedVersion: 5
