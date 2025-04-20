@@ -61,28 +61,49 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.42f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\LookAtTarget.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerController2D.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\Obstacle.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerOnSurface.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Input System Samples\Split Screen Multiplayer\ConstantOrbitalRotation.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\CinemachineFadeOutShaderController.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\MagnetGroupController.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\TurnAroundPlayer.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerAimController.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Input System Samples\Split Screen Multiplayer\PlayerCounter.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\AsteroidSmall.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\MixCamerasBasedOnSpeed.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\AlienShip.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ReparentPlayerToSurface.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ReduceGroupWeightWhenBelowFloor.cs" />
     <Compile Include="Assets\Scripts\UI\MainMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\SatellitePaths\OldSatPaths\OrbitSpline.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\Magnet.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\WrapAround.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerShoot.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\FlyAround.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\LockPosZ.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\ObstacleSpawner.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\Asteroid.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ExpandingAimReticle.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ThirdPersonFollowCameraSideSwapper.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimpleCarController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
@@ -90,15 +111,29 @@
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\SatellitePaths\OldSatPaths\SatellitePathVisualizer.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\DampedTracker.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\AimTargetManager.cs" />
     <Compile Include="Assets\Scripts\ObstacleS\Satellite.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\2D Samples\2D Platformer\GameControl.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SpawnInRadius.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\CursorLockManager.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimpleBullet.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\2D Samples\2D Platformer\Platformer Camera 2D.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Input System Samples\Split Screen Multiplayer\PlayerInitializer.cs" />
+    <Compile Include="Assets\Scripts\PhaseJumper\PhaseJumpInitializer.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Input System Samples\Split Screen Multiplayer\CustomInputHandler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ShotQualityBasedOnSplineCartPosition.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerAnimator.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\AimCameraRig.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RandomizedDollySpeed.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Scripts\SatellitePaths\OldSatPaths\SatellitePath.cs" />
@@ -107,9 +142,14 @@
     <Compile Include="Assets\Scripts\UI\GameplayUIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\PhaseJumper\PhaseJumpHandler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SamplesHelpUI.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RigidbodyInterpolationSetter.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RunnerController.cs" />
     <Compile Include="Assets\Scripts\SatellitePaths\OldSatPaths\SplineFollower.cs" />
+    <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SamplesDynamicUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -118,12 +158,14 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Unity - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\UI\SampleHelpUI.uxml" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Roboto-Bold - AFL.txt" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\UI\SamplesUIStyle.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
@@ -1183,6 +1225,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Cinemachine.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Cinemachine.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.2D.SpriteShape.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
       <Private>False</Private>
@@ -1241,6 +1287,10 @@
     </Reference>
     <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Cinemachine">
+      <HintPath>Library\ScriptAssemblies\Unity.Cinemachine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.InternalAPIEditorBridge.001">

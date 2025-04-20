@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8304898634331687570}
   - component: {fileID: 2376818334641100267}
   - component: {fileID: 4779144457228636560}
+  - component: {fileID: 8042225767644531698}
+  - component: {fileID: 2610649102310133253}
   - component: {fileID: 4151406793638510454}
   - component: {fileID: 7482817736377489263}
   m_Layer: 7
@@ -107,6 +109,40 @@ MonoBehaviour:
   rotationSpeed: 11
   decelerationDistance: 2.5
   stoppingSpeed: 0.5
+  phaseJumper: {fileID: 8042225767644531698}
+--- !u!114 &8042225767644531698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613878064215225064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90bd476265694643b9124330ec336b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFuel: 100
+  currentFuel: 100
+  jumpDuration: 0
+  jumpCooldown: 5
+  jumpDistance: 5
+  isJumping: 0
+  initialLocation: {x: 0, y: 0, z: 0}
+  targetLocation: {x: 0, y: 0, z: 0}
+  phaseJumpHandler: {fileID: 2610649102310133253}
+--- !u!114 &2610649102310133253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613878064215225064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ae195599b82764393d64ab411e27a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4151406793638510454
 Rigidbody2D:
   serializedVersion: 5

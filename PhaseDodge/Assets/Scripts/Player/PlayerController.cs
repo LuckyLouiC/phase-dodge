@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,14 +22,21 @@ public class PlayerController : MonoBehaviour
 
     private InputAction moveShip;
 
+    [SerializeField] private PhaseJumpInitializer phaseJumper;
+
+    private bool canMove = true; // Flag to control movement
+
     void Start()
     {
-        mainCamera = Camera.main;
-        targetPosition = transform.position;
         gameManager = FindAnyObjectByType<GameManager>();
+        phaseJumper = FindAnyObjectByType<PhaseJumpInitializer>();
+        targetPosition = transform.position;
         targetRotation = transform.rotation;
+        mainCamera = Camera.main;
 
         SetupInputActions();
+        phaseJumper.RegisterPhaseJumpCallbacks(OnPhaseJumpStart, OnPhaseJumpEnd);
+        phaseJumper.phaseJumpHandler.RegisterPhaseJumpEndCallback(OnPhaseJumpEnd);
     }
 
     private void SetupInputActions()
@@ -42,6 +50,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!canMove) return; // Prevent movement during phase jump
+
         // Handle touch input
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
         {
@@ -114,9 +124,31 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            Debug.Log("Game Over!");
+            phaseJumper.BroadcastMessage("TryPhaseJump", other.ClosestPoint(transform.position));
+            /*Debug.Log("Game Over!");
             gameManager.GameOver();
-            Destroy(this.gameObject);
+            Destroy(this.gameObject);*/
         }
+    }
+
+    private void OnPhaseJumpStart()
+    {
+        canMove = false; // Disable movement
+    }
+
+    private void OnPhaseJumpEnd()
+    {
+        targetPosition = transform.position; // Clear the current target position
+        StartCoroutine(WaitForNextInputToEnableMovement());
+    }
+
+    private IEnumerator WaitForNextInputToEnableMovement()
+    {
+        // Wait for the next screen tap
+        while (!Touchscreen.current.primaryTouch.press.isPressed && !Mouse.current.leftButton.isPressed)
+        {
+            yield return null;
+        }
+        canMove = true; // Re-enable movement
     }
 }
