@@ -20,6 +20,24 @@ public class PhaseJumpInitializer : MonoBehaviour
     [SerializeField] private System.Action onPhaseJumpEnd;
 
     [SerializeField] public PhaseJumpHandler phaseJumpHandler;
+    [SerializeField] private GameplayUIManager uiManager;
+
+    private void Start()
+    {
+        if (uiManager == null)
+        {
+            uiManager = Object.FindAnyObjectByType<GameplayUIManager>();
+        }
+        UpdateFuelUI();
+    }
+
+    private void UpdateFuelUI()
+    {
+        if (uiManager != null)
+        {
+            uiManager.UpdateFuelGauge(currentFuel, maxFuel);
+        }
+    }
 
     public void RegisterPhaseJumpCallbacks(System.Action startCallback, System.Action endCallback)
     {
@@ -44,7 +62,8 @@ public class PhaseJumpInitializer : MonoBehaviour
             // Pass data to the PhaseJumpHandler
             phaseJumpHandler.ExecutePhaseJump(initialLocation, targetLocation, jumpDuration);
 
-            //currentFuel -= 10f; // Deduct fuel (example value)
+            currentFuel = Mathf.Max(0, currentFuel - 10f); // Deduct fuel (example value)
+            UpdateFuelUI();
         }
     }
 }

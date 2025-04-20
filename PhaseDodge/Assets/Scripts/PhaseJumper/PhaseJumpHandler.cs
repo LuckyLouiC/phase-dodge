@@ -74,11 +74,10 @@ public class PhaseJumpHandler : MonoBehaviour
         tempSpriteRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
         tempSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder;
 
-        tempSprite.transform.rotation = transform.rotation;
-        tempSprite.transform.position = targetLocation;
+        tempSprite.transform.SetPositionAndRotation(targetLocation, transform.rotation);
 
         float elapsedTime = 0f;
-        float blinkInterval = 0.05f;
+        float blinkInterval = 0.01f;
 
         while (elapsedTime < duration)
         {

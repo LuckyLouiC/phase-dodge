@@ -6,14 +6,21 @@ using System;
 
 public class GameplayUIManager : MonoBehaviour
 {
+    [Header("Buttons")]
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button retryButton;
     [SerializeField] private Button[] quitButtons;
+
+    [Header("Menus")]
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject gameOverMenu;
 
+    [Header("Text")]
     [SerializeField] private TextMeshProUGUI scoreText;
+
+    [Header("Fuel")]
+    [SerializeField] private Slider fuelGauge;
 
     void Start()
     {
@@ -64,5 +71,13 @@ public class GameplayUIManager : MonoBehaviour
     public void ShowGameOverMenu()
     {
         gameOverMenu.SetActive(true);
+    }
+
+    public void UpdateFuelGauge(float currentFuel, float maxFuel)
+    {
+        if (fuelGauge != null)
+        {
+            fuelGauge.value = currentFuel / maxFuel;
+        }
     }
 }
