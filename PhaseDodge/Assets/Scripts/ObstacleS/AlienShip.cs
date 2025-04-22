@@ -9,6 +9,8 @@ public class AlienShip : Obstacle
     public float steeringSpeed = 2.0f; // Speed at which the ship adjusts its direction
     public float sizeVariation = 1.0f; // Adjustable in editor
 
+    [SerializeField]private float pursueDistance = 5.0f;
+
     protected override void Start()
     {
         base.Start();
@@ -22,13 +24,16 @@ public class AlienShip : Obstacle
 
     protected override void Update()
     {
-        if (player != null)
+        float playerDistance = Vector3.Distance(player.transform.position, transform.position);
+        if (player != null && (playerDistance <= pursueDistance))
         {
             InterceptPlayer();
         }
         else
         {
             Debug.LogWarning("AlienShip: PlayerController is null. Falling back to default behavior.");
+            MoveObstacle();
+            RotateTowardsDirection();
         }
         base.Update(); // Fallback to default behavior
     }
@@ -78,5 +83,13 @@ public class AlienShip : Obstacle
     {
         base.OnObjectDespawn();
         // Add any cleanup logic specific to alien ships here
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, pursueDistance);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, GetPlayerPredictedPosition());
     }
 }

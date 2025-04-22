@@ -8,7 +8,7 @@ public class Obstacle : MonoBehaviour
     protected PolygonCollider2D obstacleCollider2D;
     protected Vector3 direction;
     protected float speed = 0.5f;
-    protected bool hasEnteredScreen = false;
+    [SerializeField]protected bool hasEnteredScreen = false;
 
     protected virtual void Start()
     {
@@ -53,8 +53,11 @@ public class Obstacle : MonoBehaviour
 
         var (minScreenBounds, maxScreenBounds) = GetScreenBoundsInViewport();
 
-        return maxScreenBounds.y < 0 || minScreenBounds.y > Screen.height
-            || maxScreenBounds.x < 0 || minScreenBounds.x > Screen.width;
+        // Debugging: Log the screen bounds to verify calculations
+        Debug.Log($"Obstacle: IsFullyOffScreen - Min: {minScreenBounds}, Max: {maxScreenBounds}");
+
+        return maxScreenBounds.y < 0 || minScreenBounds.y > 1
+            || maxScreenBounds.x < 0 || minScreenBounds.x > 1; // Corrected to use normalized viewport coordinates
     }
 
     protected bool IsOnScreen()
@@ -103,7 +106,8 @@ public class Obstacle : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        // Return the object to the appropriate pool in ObstacleSpawner
+
+        Debug.Log($"Obstacle: Returning {gameObject.name} to spawner.");
         ObstacleSpawner.Instance.DestroyObstacle(gameObject);
     }
 }

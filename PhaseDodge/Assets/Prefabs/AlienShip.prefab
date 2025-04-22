@@ -191,3 +191,4 @@ MonoBehaviour:
   predictionTime: 1.5
   steeringSpeed: 2
   sizeVariation: 1
+  pursueDistance: 4
