@@ -1,0 +1,12 @@
+# ninja log v5
+572	1499	7653658368997622	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	e49fef28742457b0
+1507	2306	7653658376182267	C:/Users/danie/DizzyWolfStudio/phase-dodge/PhaseDodge/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3et14574/obj/arm64-v8a/libswappywrapper.so	cf2f60ad3221fada
+154	4153	7653658395799228	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	d79e191b98ac71f5
+117	4262	7653658396669765	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	39cea0833c9e0113
+75	4335	7653658397563651	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	757282f6452a33d4
+453	4504	7653658399382030	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	40797075b31840d5
+38	4529	7653658399581342	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	91beb31283c3f937
+336	4744	7653658401672974	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	2fa2124b54b26d0d
+265	4970	7653658403920903	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	f31138ec3a2787c8
+2	5091	7653658405078306	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	d92f4e0a3765dc06
+5091	5382	7653658408137515	C:/Users/danie/DizzyWolfStudio/phase-dodge/PhaseDodge/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3et14574/obj/arm64-v8a/libgame.so	b3256abc57bbf254
