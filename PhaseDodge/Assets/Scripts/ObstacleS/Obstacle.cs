@@ -54,7 +54,7 @@ public class Obstacle : MonoBehaviour
         var (minScreenBounds, maxScreenBounds) = GetScreenBoundsInViewport();
 
         // Debugging: Log the screen bounds to verify calculations
-        Debug.Log($"Obstacle: IsFullyOffScreen - Min: {minScreenBounds}, Max: {maxScreenBounds}");
+        //Debug.Log($"Obstacle: IsFullyOffScreen - Min: {minScreenBounds}, Max: {maxScreenBounds}");
 
         return maxScreenBounds.y < 0 || minScreenBounds.y > 1
             || maxScreenBounds.x < 0 || minScreenBounds.x > 1; // Corrected to use normalized viewport coordinates
@@ -107,7 +107,7 @@ public class Obstacle : MonoBehaviour
             return;
         }
 
-        Debug.Log($"Obstacle: Returning {gameObject.name} to spawner.");
+        //Debug.Log($"Obstacle: Returning {gameObject.name} to spawner.");
         ObstacleSpawner.Instance.DestroyObstacle(gameObject);
     }
 }

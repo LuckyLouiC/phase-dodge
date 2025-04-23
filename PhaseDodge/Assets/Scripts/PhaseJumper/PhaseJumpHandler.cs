@@ -24,12 +24,12 @@ public class PhaseJumpHandler : MonoBehaviour
     {
         isJumping = true;
 
-        // Notify PlayerController to disable movement
-        PlayerController playerController = Object.FindAnyObjectByType<PlayerController>();
-        if (playerController != null)
-        {
-            playerController.SendMessage("OnPhaseJumpStart");
-        }
+        // Removed notification to PlayerController to disable movement
+        // PlayerController playerController = Object.FindAnyObjectByType<PlayerController>();
+        // if (playerController != null)
+        // {
+        //     playerController.SendMessage("OnPhaseJumpStart");
+        // }
 
         // Slow down time
         float originalTimeScale = Time.timeScale;
@@ -39,7 +39,10 @@ public class PhaseJumpHandler : MonoBehaviour
         Debug.Log($"Phase jump started from {initialLocation} to {targetLocation}");
 
         // Start alternating positions and blinking effect
-        yield return StartCoroutine(AlternatePositionAndBlink(initialLocation, targetLocation, duration));
+        // yield return StartCoroutine(AlternatePositionAndBlink(initialLocation, targetLocation, duration));
+
+        // Start phase jump effect
+        yield return StartCoroutine(PhaseJumpEffect(duration));
 
         // Gradually restore time scale
         while (Time.timeScale < originalTimeScale)
@@ -53,13 +56,37 @@ public class PhaseJumpHandler : MonoBehaviour
         Debug.Log("Phase jump ended");
         onPhaseJumpEnd?.Invoke();
 
-        // Notify PlayerController to re-enable movement
-        if (playerController != null)
-        {
-            playerController.SendMessage("OnPhaseJumpEnd");
-        }
+        // Removed notification to PlayerController to re-enable movement
+        // if (playerController != null)
+        // {
+        //     playerController.SendMessage("OnPhaseJumpEnd");
+        // }
 
         isJumping = false;
+    }
+
+    private IEnumerator PhaseJumpEffect(float duration)
+    { 
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) yield break;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            // Calculate the alpha value based on the elapsed time
+            float alpha = Mathf.PingPong(elapsedTime * 2f, 1f);
+            Color color = spriteRenderer.color;
+            color.a = alpha;
+            spriteRenderer.color = color;
+            // Wait for the next frame
+            yield return null;
+            elapsedTime += Time.unscaledDeltaTime;
+        }
+        // Ensure the sprite is fully visible at the end
+        Color finalColor = spriteRenderer.color;
+        finalColor.a = 1f;
+        spriteRenderer.color = finalColor;
     }
 
     private IEnumerator AlternatePositionAndBlink(Vector3 initialLocation, Vector3 targetLocation, float duration)
@@ -100,4 +127,6 @@ public class PhaseJumpHandler : MonoBehaviour
         // Clean up the temporary sprite
         Destroy(tempSprite);
     }
+
+
 }

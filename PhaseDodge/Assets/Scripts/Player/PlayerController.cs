@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
 
         SetupInputActions();
-        phaseJumper.RegisterPhaseJumpCallbacks(OnPhaseJumpStart, OnPhaseJumpEnd);
-        phaseJumper.phaseJumpHandler.RegisterPhaseJumpEndCallback(OnPhaseJumpEnd);
+/*        phaseJumper.RegisterPhaseJumpCallbacks(OnPhaseJumpStart, OnPhaseJumpEnd);
+        phaseJumper.phaseJumpHandler.RegisterPhaseJumpEndCallback(OnPhaseJumpEnd);*/
     }
 
     private void SetupInputActions()
@@ -133,10 +133,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnPhaseJumpStart()
     {
-        canMove = false; // Disable movement
+        // Removed logic to disable movement
     }
 
-    private void OnPhaseJumpEnd()
+/*    private void OnPhaseJumpEnd()
     {
         targetPosition = transform.position; // Clear the current target position
         StartCoroutine(WaitForNextInputToEnableMovement());
@@ -150,5 +150,5 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         canMove = true; // Re-enable movement
-    }
+    }*/
 }

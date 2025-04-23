@@ -69,7 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxFuel: 100
   currentFuel: 100
-  jumpDuration: 0
+  jumpDuration: 5
   jumpCooldown: 5
   jumpDistance: 5
   isJumping: 0
