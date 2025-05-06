@@ -119,6 +119,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &46899417 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8613878064215225064, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
+  m_PrefabInstance: {fileID: 4591422665637422859}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &46899425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46899417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337ae636003b29749b4350f27e8bb7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &85034533
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,6 +2656,7 @@ MonoBehaviour:
   pauseMenu: {fileID: 935715759}
   gameOverMenu: {fileID: 2109127224}
   scoreText: {fileID: 769636321}
+  fuelGauge: {fileID: 0}
 --- !u!4 &1787352391
 Transform:
   m_ObjectHideFlags: 0
@@ -3017,7 +3035,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4151406793638510454, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_Simulated
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: maxSpeed
@@ -3038,6 +3056,10 @@ PrefabInstance:
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: decelerationDistance
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8042225767644531698, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
+      propertyPath: jumpDuration
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8304898634331687570, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3090,7 +3112,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8613878064215225064, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 46899425}
   m_SourcePrefab: {fileID: 100100000, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -68,7 +68,7 @@ public class ObstacleSpawner : MonoBehaviour
     {
         mainCamera = Camera.main;
         PreWarmPools(); // Pre-warm object pools
-        SetStage(1); // Start with stage 1
+        SetStage(4); // Start with stage 1
     }
 
     private void PreWarmPools()
@@ -138,7 +138,7 @@ public class ObstacleSpawner : MonoBehaviour
             { 1,     (2.0f,             0f,             0f) },
             { 2,     (2.0f,             5.0f,           0f) },
             { 3,     (2.0f,             5.0f,           10.0f) },
-            { 4,     (0f,               2.0f,           0f) }
+            { 4,     (2.0f,             0.0f,           0f) }
         };
 
         if (stageConfig.TryGetValue(stage, out var config))

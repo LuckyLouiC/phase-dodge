@@ -6,6 +6,13 @@ public class PhaseJumpHandler : MonoBehaviour
     private bool isJumping = false;
     [SerializeField] private System.Action onPhaseJumpEnd;
 
+    [SerializeField] private ResourceMiner miner;
+
+    private void Start()
+    {
+        miner = FindAnyObjectByType<ResourceMiner>();
+    }
+
     public void ExecutePhaseJump(Vector3 initialLocation, Vector3 targetLocation, float duration)
     {
         Debug.Log($"Executing phase jump from {initialLocation} to {targetLocation} over {duration} seconds. isJumping: {isJumping}");
@@ -23,7 +30,7 @@ public class PhaseJumpHandler : MonoBehaviour
     private IEnumerator HandlePhaseJump(Vector3 initialLocation, Vector3 targetLocation, float duration)
     {
         isJumping = true;
-
+        miner.BroadcastMessage("StartMining");
         // Removed notification to PlayerController to disable movement
         // PlayerController playerController = Object.FindAnyObjectByType<PlayerController>();
         // if (playerController != null)
@@ -63,6 +70,7 @@ public class PhaseJumpHandler : MonoBehaviour
         // }
 
         isJumping = false;
+        miner.BroadcastMessage("StopMining");
     }
 
     private IEnumerator PhaseJumpEffect(float duration)
