@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 currentVelocity = Vector3.zero;
     private Vector3 smoothDampVelocity = Vector3.zero;
 
+    private bool isUnderExternalControl = false; // Flag to indicate external control
+
+    public Vector2 autoTargetPosition; // Target position for automatic movement
+
     private InputAction moveShip;
 
     [SerializeField] private PhaseJumpInitializer phaseJumper;
@@ -48,30 +52,58 @@ public class PlayerController : MonoBehaviour
         moveShip.Enable();
     }
 
+    public void SetExternalControl(Vector2 autoPosition)
+    {
+        isUnderExternalControl = true;
+        targetPosition = autoPosition;
+        canMove = false; // Disable player input
+        //Debug.Log($"PlayerController: SetExternalControl - targetPosition: {targetPosition}");
+    }
+
+    public void ReleaseExternalControl()
+    {
+        isUnderExternalControl = false;
+        canMove = true; // Re-enable player input
+    }
+
     void Update()
     {
-        if (!canMove) return; // Prevent movement during phase jump
+        if (isUnderExternalControl)
+        {
+            // Handle automatic movement under external control
+            (targetPosition, targetRotation) = GetTargetDirectionAndRotation(targetPosition);
+            //Debug.Log($"PlayerController: Update - isUnderExternalControl: {isUnderExternalControl}, targetPosition: {targetPosition}");
+        }
+        else if (canMove)
+        {
+            // Handle player input
+            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+            {
+                (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Touchscreen.current.primaryTouch.position.ReadValue());
+            }
+            else if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+            {
+                (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Mouse.current.position.ReadValue());
+            }
+        }
 
-        // Handle touch input
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
-        {
-            (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Touchscreen.current.primaryTouch.position.ReadValue());
-        }
-        // Handle mouse input
-        else if (Mouse.current != null && Mouse.current.leftButton.isPressed)
-        {
-            (targetPosition, targetRotation) = GetTargetDirectionAndRotation(Mouse.current.position.ReadValue());
-        }
         SetDirectionAndRotation();
         ClampPositionWithinCameraBounds();
         Debug.DrawLine(transform.position, transform.position + transform.up * (targetPosition - transform.position).magnitude, Color.red);
     }
 
     // Update method to accept input position from both touch and mouse
-    private (Vector3, Quaternion) GetTargetDirectionAndRotation(Vector2 inputPosition)
+    private (Vector3, Quaternion) GetTargetDirectionAndRotation(Vector3 inputPosition)
     {
-        Vector3 worldInputPosition = mainCamera.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, transform.position.z - mainCamera.transform.position.z));
-        targetPosition = worldInputPosition;
+        if (isUnderExternalControl)
+        {
+            targetPosition = inputPosition;
+        }
+        else
+        {
+            Vector3 worldInputPosition = mainCamera.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, transform.position.z - mainCamera.transform.position.z));
+            targetPosition = worldInputPosition;
+        }
 
         Vector3 direction = targetPosition - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -124,17 +156,29 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            phaseJumper.BroadcastMessage("TryPhaseJump", other.ClosestPoint(transform.position));
+            phaseJumper.BroadcastMessage("TryPhaseJump", other.transform.position);
             /*Debug.Log("Game Over!");
             gameManager.GameOver();
             Destroy(this.gameObject);*/
         }
     }
 
-    private void OnPhaseJumpStart()
+    public void OnPhaseJumpStart()
+    {
+        // Disable player input during phase jump
+        canMove = false;
+    }
+
+    public void OnPhaseJumpEnd()
+    {
+        // Re-enable player input after phase jump
+        canMove = true;
+    }
+
+/*    private void OnPhaseJumpStart()
     {
         // Removed logic to disable movement
-    }
+    }*/
 
 /*    private void OnPhaseJumpEnd()
     {

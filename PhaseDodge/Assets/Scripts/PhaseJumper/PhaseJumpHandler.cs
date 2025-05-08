@@ -7,15 +7,17 @@ public class PhaseJumpHandler : MonoBehaviour
     [SerializeField] private System.Action onPhaseJumpEnd;
 
     [SerializeField] private ResourceMiner miner;
+    private PlayerController playerController;
 
     private void Start()
     {
         miner = FindAnyObjectByType<ResourceMiner>();
+        playerController = FindAnyObjectByType<PlayerController>();
     }
 
     public void ExecutePhaseJump(Vector3 initialLocation, Vector3 targetLocation, float duration)
     {
-        Debug.Log($"Executing phase jump from {initialLocation} to {targetLocation} over {duration} seconds. isJumping: {isJumping}");
+        //Debug.Log($"Executing phase jump from {initialLocation} to {targetLocation} over {duration} seconds. isJumping: {isJumping}");
         if (!isJumping)
         {
             StartCoroutine(HandlePhaseJump(initialLocation, targetLocation, duration));
@@ -30,47 +32,27 @@ public class PhaseJumpHandler : MonoBehaviour
     private IEnumerator HandlePhaseJump(Vector3 initialLocation, Vector3 targetLocation, float duration)
     {
         isJumping = true;
-        miner.BroadcastMessage("StartMining");
-        // Removed notification to PlayerController to disable movement
-        // PlayerController playerController = Object.FindAnyObjectByType<PlayerController>();
-        // if (playerController != null)
-        // {
-        //     playerController.SendMessage("OnPhaseJumpStart");
-        // }
+        miner.StartMining();
 
+        //Debug.Log($"PhaseJumpHandler: Start jump, initialLocation: {initialLocation}, targetLocation {targetLocation}");
         // Slow down time
         float originalTimeScale = Time.timeScale;
         Time.timeScale = Mathf.Clamp(0.2f, 0.0f, 100.0f); // Ensure within valid range
 
-        // Notify listeners that the phase jump has started
-        Debug.Log($"Phase jump started from {initialLocation} to {targetLocation}");
+        // Move the player to the obstacle's center using external control
+        playerController.SetExternalControl(targetLocation);
 
-        // Start alternating positions and blinking effect
-        // yield return StartCoroutine(AlternatePositionAndBlink(initialLocation, targetLocation, duration));
+        // Wait for the phase jump duration
+        yield return new WaitForSecondsRealtime(duration);
 
-        // Start phase jump effect
-        yield return StartCoroutine(PhaseJumpEffect(duration));
-
-        // Gradually restore time scale
-        while (Time.timeScale < originalTimeScale)
-        {
-            Time.timeScale = Mathf.Clamp(Time.timeScale + (Time.unscaledDeltaTime / duration), 0.0f, originalTimeScale);
-            yield return null;
-        }
+        // Restore time scale
         Time.timeScale = originalTimeScale;
 
-        // Notify listeners that the phase jump has ended
-        Debug.Log("Phase jump ended");
-        onPhaseJumpEnd?.Invoke();
-
-        // Removed notification to PlayerController to re-enable movement
-        // if (playerController != null)
-        // {
-        //     playerController.SendMessage("OnPhaseJumpEnd");
-        // }
+        // Release external control after the phase jump ends
+        playerController.ReleaseExternalControl();
 
         isJumping = false;
-        miner.BroadcastMessage("StopMining");
+        miner.StopMining();
     }
 
     private IEnumerator PhaseJumpEffect(float duration)

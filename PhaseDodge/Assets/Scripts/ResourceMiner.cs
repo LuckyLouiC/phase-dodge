@@ -12,7 +12,7 @@ public class ResourceMiner : MonoBehaviour
     // maximumCapacities: maximum amount of resources that can be stored in the ship's inventory
 
     private bool isMining = false;
-    private float miningRate = 1.0f;
+    //private float miningRate = 1.0f;
 
     // Methods:
     // Start: initializes the mining rate and resource type
@@ -23,13 +23,13 @@ public class ResourceMiner : MonoBehaviour
     public void StartMining()
     {
         isMining = true;
-        Debug.Log($"Mining started. isMining: {isMining}");
+        Debug.Log("Mining started.");
     }
 
     public void StopMining()
     {
         isMining = false;
-        Debug.Log($"Mining stopped. isMining: {isMining}");
+        Debug.Log("Mining stopped.");
     }
 
     // Properties:

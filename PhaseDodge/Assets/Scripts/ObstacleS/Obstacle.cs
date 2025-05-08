@@ -9,6 +9,7 @@ public class Obstacle : MonoBehaviour
     protected Vector3 direction;
     protected float speed = 0.5f;
     [SerializeField]protected bool hasEnteredScreen = false;
+    public bool isMined = false; // Flag to indicate if the obstacle has been mined
 
     protected virtual void Start()
     {

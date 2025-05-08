@@ -45,22 +45,14 @@ public class PhaseJumpInitializer : MonoBehaviour
         onPhaseJumpEnd = endCallback;
     }
 
-    public void TryPhaseJump(Vector2 collisionLocation)
+    public void TryPhaseJump(Vector3 obstacleCenter)
     {
-        Debug.Log($"Phase Jump Triggered, collisionLocation: {collisionLocation}");
         if (currentFuel > 0 && !isJumping)
         {
             Vector3 initialLocation = transform.position;
 
-            // Calculate the direction from the object's center to the collision point
-            Vector3 direction = (Vector3)collisionLocation - initialLocation;
-            direction.Normalize(); // Normalize to get the unit vector
-
-            // Calculate the target location based on the direction and jump distance
-            Vector3 targetLocation = initialLocation + direction * jumpDistance;
-
             // Pass data to the PhaseJumpHandler
-            phaseJumpHandler.ExecutePhaseJump(initialLocation, targetLocation, jumpDuration);
+            phaseJumpHandler.ExecutePhaseJump(initialLocation, obstacleCenter, jumpDuration);
 
             currentFuel = Mathf.Max(0, currentFuel - 10f); // Deduct fuel (example value)
             UpdateFuelUI();
