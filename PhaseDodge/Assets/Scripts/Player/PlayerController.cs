@@ -68,6 +68,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Time.deltaTime == 0)
+            return; // Skip update if time delta is zero
         if (isUnderExternalControl)
         {
             // Handle automatic movement under external control
@@ -136,8 +138,8 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer(Vector3 targetVelocity)
     {
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref smoothDampVelocity, acceleration * Time.deltaTime);
-        transform.position += currentVelocity * Time.deltaTime;
+        currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref smoothDampVelocity, acceleration * Time.unscaledDeltaTime);
+        transform.position += currentVelocity * Time.unscaledDeltaTime;
     }    
 
     private void ClampPositionWithinCameraBounds()
