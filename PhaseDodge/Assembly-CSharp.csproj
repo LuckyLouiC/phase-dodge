@@ -64,7 +64,6 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\LookAtTarget.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerController2D.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
-    <Compile Include="Assets\Scripts\ResourceMiner.cs" />
     <Compile Include="Assets\Scripts\Obstacles\ObstacleSpawner.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
@@ -130,8 +129,10 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ShotQualityBasedOnSplineCartPosition.cs" />
+    <Compile Include="Assets\Scripts\Miner\ResourceMiner.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerAnimator.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\AimCameraRig.cs" />
+    <Compile Include="Assets\Scripts\Cargo Bay\CargoBay.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RandomizedDollySpeed.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />

@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 4151406793638510454}
   - component: {fileID: 7482817736377489263}
   - component: {fileID: 2376818334641100267}
+  - component: {fileID: 7523444955243019451}
+  - component: {fileID: 6449723086766559859}
   m_Layer: 7
   m_Name: PlayerShip
   m_TagString: Player
@@ -54,6 +56,7 @@ MonoBehaviour:
   rotationSpeed: 11
   decelerationDistance: 2.5
   stoppingSpeed: 0.5
+  autoTargetPosition: {x: 0, y: 0}
   phaseJumper: {fileID: 8042225767644531698}
 --- !u!114 &8042225767644531698
 MonoBehaviour:
@@ -69,7 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxFuel: 100
   currentFuel: 100
-  jumpDuration: 5
+  jumpDuration: 2
   jumpCooldown: 5
   jumpDistance: 5
   isJumping: 0
@@ -89,6 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56ae195599b82764393d64ab411e27a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  miner: {fileID: 0}
 --- !u!50 &4151406793638510454
 Rigidbody2D:
   serializedVersion: 5
@@ -221,3 +225,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7523444955243019451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613878064215225064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337ae636003b29749b4350f27e8bb7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mineTime: 1
+--- !u!114 &6449723086766559859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613878064215225064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432e7440f2213814bbd61c8b0a22e8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
