@@ -2408,7 +2408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: acceleration
