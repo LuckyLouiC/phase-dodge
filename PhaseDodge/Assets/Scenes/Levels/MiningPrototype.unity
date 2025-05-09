@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337ae636003b29749b4350f27e8bb7d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mineTime: 1
 --- !u!1 &182590994
 GameObject:
   m_ObjectHideFlags: 0
@@ -2404,6 +2405,10 @@ PrefabInstance:
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: maxSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4779144457228636560, guid: 2b3919679fd322c42b34e7a66ac2bb65, type: 3}
       propertyPath: acceleration
