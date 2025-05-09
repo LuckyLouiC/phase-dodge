@@ -158,10 +158,19 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            phaseJumper.BroadcastMessage("TryPhaseJump", other.transform.position);
-            /*Debug.Log("Game Over!");
-            gameManager.GameOver();
-            Destroy(this.gameObject);*/
+            Asteroid collidedObstacle = other.gameObject.GetComponent<Asteroid>();
+            Debug.Log($"PlayerController: collidedObstacle: {collidedObstacle}");
+            if (collidedObstacle == null)
+            {
+                Debug.LogWarning("Collided with object tagged 'Obstacle' but no Asteroid script attached");
+                return;
+            }
+            if (phaseJumper == null)
+            {
+                Debug.LogWarning("PhaseJumper is null in PlayerController");
+                return;
+            }
+            phaseJumper.TryPhaseJump(collidedObstacle);
         }
     }
 

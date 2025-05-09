@@ -22,6 +22,8 @@ public class PhaseJumpInitializer : MonoBehaviour
     [SerializeField] public PhaseJumpHandler phaseJumpHandler;
     [SerializeField] private GameplayUIManager uiManager;
 
+    private ResourceMiner miner;
+
     private void Start()
     {
         if (uiManager == null)
@@ -29,6 +31,10 @@ public class PhaseJumpInitializer : MonoBehaviour
             uiManager = Object.FindAnyObjectByType<GameplayUIManager>();
         }
         UpdateFuelUI();
+        if (miner == null)
+        {
+            miner = FindAnyObjectByType<ResourceMiner>();
+        }
     }
 
     private void UpdateFuelUI()
@@ -45,15 +51,19 @@ public class PhaseJumpInitializer : MonoBehaviour
         onPhaseJumpEnd = endCallback;
     }
 
-    public void TryPhaseJump(Vector3 obstacleCenter)
+    public void TryPhaseJump(Asteroid asteroid)
     {
         if (currentFuel > 0 && !isJumping)
         {
             Vector3 initialLocation = transform.position;
+            Vector3 obstacleCenter = asteroid.transform.position;
+
+            Debug.Log($"PhaseJumpInitializer: TryPhaseJump asteroid: {asteroid}");
 
             // Pass data to the PhaseJumpHandler
+            miner.mineTime = asteroid.mineTime;
+            jumpDuration = asteroid.mineTime;
             phaseJumpHandler.ExecutePhaseJump(initialLocation, obstacleCenter, jumpDuration);
-
             currentFuel = Mathf.Max(0, currentFuel - 10f); // Deduct fuel (example value)
             UpdateFuelUI();
         }

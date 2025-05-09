@@ -35,6 +35,8 @@ public class Asteroid : Obstacle
 
         // Adjust speed based on size variation (smaller size = higher speed)
         speed = Mathf.Lerp(1.0f, 0.3f, sizeVariation); // Larger sizeVariation results in slower speed
+
+        mineTime = sizeVariation * 3f; // Adjust mine time based on size variation
     }
 
     protected override void Update()

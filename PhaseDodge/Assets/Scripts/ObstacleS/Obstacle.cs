@@ -10,6 +10,7 @@ public class Obstacle : MonoBehaviour
     protected float speed = 0.5f;
     [SerializeField]protected bool hasEnteredScreen = false;
     public bool isMined = false; // Flag to indicate if the obstacle has been mined
+    public float mineTime = 1.0f; // Time required to mine the obstacle
 
     protected virtual void Start()
     {

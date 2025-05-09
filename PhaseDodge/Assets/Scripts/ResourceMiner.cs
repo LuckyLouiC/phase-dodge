@@ -12,23 +12,35 @@ public class ResourceMiner : MonoBehaviour
     // maximumCapacities: maximum amount of resources that can be stored in the ship's inventory
 
     private bool isMining = false;
+    public float mineTime = 1.0f; // Time required to mine the obstacle
+
     //private float miningRate = 1.0f;
 
     // Methods:
     // Start: initializes the mining rate and resource type
     // Update: checks if the ship is mining and updates the inventory
     // Mine: mines resources from the asteroid
-    // SendToInventory: sends the mined resources to the ship's inventory
+    // SendToInventory: sends the mined resources to the ship's
+
+    private void Update()
+    {
+        if (isMining)
+        {
+            mineTime -= Time.unscaledDeltaTime; // Decrease mine time
+        }
+    }
+
 
     public void StartMining()
     {
         isMining = true;
-        Debug.Log("Mining started.");
+        Debug.Log($"Mining started. minedObstacle: mineTime: {mineTime}");
     }
 
     public void StopMining()
     {
         isMining = false;
+        mineTime = 1.0f; // Reset mine time
         Debug.Log("Mining stopped.");
     }
 
